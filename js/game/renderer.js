@@ -767,12 +767,14 @@ export default class Renderer {
         this.ctx.save();
         this.ctx.translate(x, y);
         this.ctx.scale(cameraZoom, cameraZoom);
-        
-        // Takılmış balık rotasyonu
-        if (rotation) {
+
+        // Rotasyon uygulanacaksa
+        if (rotation !== 0) {
             this.ctx.rotate(rotation);
+            // Rotasyon varsa direction'ı 1 yap (sprite'ın orijinal yönü)
+            direction = 1;
         }
-        
+
         if (isPlayer) {
             // Oyuncu balığı için sprite atlas kullan
             this.fishAssets.drawPlayerFish(this.ctx, 0, 0, size, fishLevel, direction, timestamp);
@@ -780,7 +782,7 @@ export default class Renderer {
             // Düşman balıkları için yeni atlas sistemini kullan
             this.fishAssets.drawEnemyFish(this.ctx, 0, 0, size, fishLevel, direction, timestamp);
         }
-        
+
         this.ctx.restore();
     }
 
@@ -1000,7 +1002,8 @@ export default class Renderer {
         }
 
         // Oyuncu balığını çiz
-        const direction = player.isHooked ? 0 : player.direction;
+        // Rotasyon kullanılıyorsa direction'ı devre dışı bırak
+        const direction = player.useRotation ? 1 : (player.isHooked ? 0 : player.direction);
         this.drawFish(
             player.x,
             player.y,
@@ -1011,7 +1014,7 @@ export default class Renderer {
             cameraZoom,
             true,
             0,
-            player.rotation || 0,
+            player.useRotation ? player.rotation : 0,
             Date.now()
         );
 

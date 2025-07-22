@@ -124,6 +124,8 @@ export default class Game {
             level: CONFIG.PLAYER_INITIAL.LEVEL, // Atlas için seviye
             direction: 1, // Başlangıç yönü
             rotation: 0,
+            targetRotation: 0,
+            useRotation: false,
             isAnimating: true // Animasyon durumu
         };
         
@@ -692,9 +694,32 @@ export default class Game {
             const baseSpeed = 0.1;
             const currentSpeed = this.playerSlowEffect.active ? baseSpeed * 0.3 : baseSpeed;
             
-            // Hareket yönüne göre direction değerini ayarla
-            if (Math.abs(dx) > 0.1) { // Küçük hareketleri görmezden gel
-                this.player.direction = dx > 0 ? 1 : -1; // Sağa gidiyorsa sağa bak, sola gidiyorsa sola bak
+            // Sürükleme yönüne göre balığı rotate et
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance > 3) { // Küçük hareketleri görmezden gel
+                // Sürükleme yönünü hesapla (sprite sağa bakıyor, bu yüzden 0° = sağ)
+                const dragAngle = Math.atan2(dy, dx);
+
+                // Hedef rotasyonu ayarla
+                this.player.targetRotation = dragAngle;
+
+                // İlk kez ayarlanıyorsa
+                if (this.player.rotation === undefined) {
+                    this.player.rotation = dragAngle;
+                }
+
+                // Yumuşak rotasyon geçişi
+                let angleDiff = this.player.targetRotation - this.player.rotation;
+
+                // En kısa yolu bul (-π ile +π arası)
+                while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+                while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+                // Yumuşak geçiş
+                this.player.rotation += angleDiff * 0.15;
+
+                // Rotasyon kullanıldığını işaretle
+                this.player.useRotation = true;
             }
             
             this.player.x += dx * currentSpeed;
@@ -1434,6 +1459,13 @@ export default class Game {
         this.isTouching = false;
         this.isMouseDown = false;
         this.slowMotionTimer = 0;
+
+        // Dokunma bittiğinde rotasyonu sıfırla
+        if (this.player && !this.player.isHooked) {
+            this.player.useRotation = false;
+            this.player.rotation = 0;
+            this.player.targetRotation = 0;
+        }
     }
 
     // Temizleme fonksiyonunu güncelle
