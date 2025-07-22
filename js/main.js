@@ -67,6 +67,7 @@ class GameApp {
     setupEventListeners() {
         document.getElementById('startButton').addEventListener('click', () => this.startGame());
         document.getElementById('restartButton').addEventListener('click', () => this.restartGame());
+        document.getElementById('homeButton').addEventListener('click', () => this.goToMainMenu());
 
         // İnaktivite kontrolü için event listener'lar
         ['touchstart', 'touchmove', 'mousedown', 'mousemove'].forEach(eventType => {
@@ -201,6 +202,20 @@ class GameApp {
     restartGame() {
         this.ui.showGameOverScreen(false);
         this.startGame();
+    }
+
+    // Ana menüye dön
+    goToMainMenu() {
+        gameState = 'menu';
+        this.ui.showGameOverScreen(false);
+        this.ui.showStartScreen(true);
+
+        // Oyun durumunu sıfırla
+        this.game.gameState = 'menu';
+
+        // UI panelini gizle
+        const uiPanel = document.querySelector('.ui');
+        if (uiPanel) uiPanel.style.display = 'none';
     }
     
     // Oyun bitişi
