@@ -135,27 +135,30 @@ export default class Game {
         return player;
     }
     
-    // Düşman balık oluşturma - Canvas içinde
+    // Düşman balık oluşturma - Ekran dışından spawn
     createEnemyFish() {
-        // Canvas kenarlarından spawn (görünür alanda)
+        // Zoom seviyesine göre spawn mesafesini ayarla
+        const spawnDistance = Math.max(150, 200 / this.cameraZoom);
+
+        // Ekran dışından spawn (görünmez alanda)
         const spawnSide = Math.random();
         let x, y, direction;
 
-        if (spawnSide < 0.25) { // Sol kenar
-            x = 50;
-            y = Math.random() * (this.canvas.height - 100) + 50;
-            direction = 1;
-        } else if (spawnSide < 0.5) { // Sağ kenar
-            x = this.canvas.width - 50;
-            y = Math.random() * (this.canvas.height - 100) + 50;
-            direction = -1;
-        } else if (spawnSide < 0.75) { // Üst kenar
-            x = Math.random() * (this.canvas.width - 100) + 50;
-            y = 50;
+        if (spawnSide < 0.25) { // Sol kenar - ekran dışından
+            x = -spawnDistance; // Zoom'a göre ayarlanmış mesafe
+            y = Math.random() * this.canvas.height;
+            direction = 1; // Sağa doğru hareket
+        } else if (spawnSide < 0.5) { // Sağ kenar - ekran dışından
+            x = this.canvas.width + spawnDistance; // Zoom'a göre ayarlanmış mesafe
+            y = Math.random() * this.canvas.height;
+            direction = -1; // Sola doğru hareket
+        } else if (spawnSide < 0.75) { // Üst kenar - ekran dışından
+            x = Math.random() * this.canvas.width;
+            y = -spawnDistance; // Zoom'a göre ayarlanmış mesafe
             direction = Math.random() < 0.5 ? 1 : -1;
-        } else { // Alt kenar
-            x = Math.random() * (this.canvas.width - 100) + 50;
-            y = this.canvas.height - 50;
+        } else { // Alt kenar - ekran dışından
+            x = Math.random() * this.canvas.width;
+            y = this.canvas.height + spawnDistance; // Zoom'a göre ayarlanmış mesafe
             direction = Math.random() < 0.5 ? 1 : -1;
         }
 
@@ -185,19 +188,22 @@ export default class Game {
         this.enemies.push(fish);
     }
     
-    // Deniz anası oluşturma - Canvas içinde
+    // Deniz anası oluşturma - Ekran dışından spawn
     createJellyfish() {
-        // Canvas kenarlarından spawn
+        // Zoom seviyesine göre spawn mesafesini ayarla
+        const spawnDistance = Math.max(150, 200 / this.cameraZoom);
+
+        // Ekran dışından spawn
         const spawnSide = Math.random();
         let x, y, direction;
 
-        if (spawnSide < 0.5) { // Sol/sağ kenar
-            x = spawnSide < 0.25 ? 50 : this.canvas.width - 50;
-            y = Math.random() * (this.canvas.height - 100) + 50;
+        if (spawnSide < 0.5) { // Sol/sağ kenar - ekran dışından
+            x = spawnSide < 0.25 ? -spawnDistance : this.canvas.width + spawnDistance;
+            y = Math.random() * this.canvas.height;
             direction = spawnSide < 0.25 ? 1 : -1;
-        } else { // Üst/alt kenar
-            x = Math.random() * (this.canvas.width - 100) + 50;
-            y = spawnSide < 0.75 ? 50 : this.canvas.height - 50;
+        } else { // Üst/alt kenar - ekran dışından
+            x = Math.random() * this.canvas.width;
+            y = spawnSide < 0.75 ? -spawnDistance : this.canvas.height + spawnDistance;
             direction = Math.random() < 0.5 ? 1 : -1;
         }
 
@@ -1001,15 +1007,16 @@ export default class Game {
     updateProgressiveSpawning() {
         const waveProgress = this.waveTimer / this.waveDuration; // 0-1 arası
         const gameMinutes = Math.floor(this.gameTimer / 3600); // Oyun dakikası
-        
+
         // Sakin dönem kontrolü
         if (this.calmPeriodEnd && this.gameTimer < this.calmPeriodEnd) {
             return; // Sakin dönemde hiç spawn etme
         }
-        
+
         // Dalga 1-2: Sadece küçük balıklar (kolay başlangıç)
         if (this.currentWave <= 2) {
             if (Math.random() < 0.015 * this.difficultyMultiplier) {
+                console.log('Spawning enemy fish - Wave:', this.currentWave);
                 this.createEnemyFish();
             }
             // Çok nadir mıknatıs
