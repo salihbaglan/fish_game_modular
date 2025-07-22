@@ -5,6 +5,7 @@ import Effects from './game/effects.js';
 import InputHandler from './game/input.js';
 import Game from './game/game.js';
 import UI from './ui/ui.js';
+import AudioManager from './audio/audio-manager.js';
 import { saveGameData, loadHighScore } from './utils/utils.js';
 import { initLocalization } from './utils/localization.js'; // Lokalizasyon modülünü dahil et
 
@@ -27,9 +28,10 @@ class GameApp {
         this.effects = new Effects(this.gameContainer);
         this.inputHandler = new InputHandler(this.canvas);
         this.ui = new UI();
-        
+        this.audioManager = new AudioManager();
+
         // Oyun nesnesi
-        this.game = new Game(this.canvas, this.effects, this.ui); // UI örneğini Game'e iletiyoruz
+        this.game = new Game(this.canvas, this.effects, this.ui, this.audioManager); // AudioManager'ı da ilet
         
         // Global referans (renderer için)
         window.game = this.game;
@@ -189,7 +191,14 @@ class GameApp {
         this.lastInteractionTime = Date.now();
         this.isGamePaused = false;
         gameSpeed = 1;
-        
+
+        // Ses ayarlarını kontrol et ve müzik başlat
+        const soundEnabled = this.ui.isSoundEnabled();
+        this.audioManager.setEnabled(soundEnabled);
+        if (soundEnabled) {
+            this.audioManager.playMusic('gameLoop');
+        }
+
         this.ui.showStartScreen(false);
         // Oyun başladığında üstteki paneli göster
         const uiPanel = document.querySelector('.ui');
@@ -224,6 +233,12 @@ class GameApp {
         saveGameData(result.highScore);
         const isNewHighScore = result.score >= result.highScore;
 
+        // Tüm müziği durdur ve game over sesi çal
+        if (this.audioManager.isEnabled) {
+            this.audioManager.stopAll();
+            this.audioManager.play('gameOver');
+        }
+
         // Barları kesin kapatmak için efektleri pasif yapıp UI'yı güncelle
         this.game.magnetEffect.active = false;
         this.game.shieldEffect.active = false;
@@ -257,7 +272,12 @@ class GameApp {
             );
             
             this.updateUI();
-            
+
+            // Tehlike durumu kontrolü (müzik değişimi için)
+            if (this.audioManager.isEnabled) {
+                this.audioManager.checkDangerState(this.game);
+            }
+
             if (gameState.gameState === 'playing') {
                 requestAnimationFrame(() => this.gameLoop());
             } else if (gameState.gameState === 'gameOver') {
@@ -269,6 +289,6 @@ class GameApp {
 
 // Sayfa yüklendiğinde oyunu başlat
 document.addEventListener('DOMContentLoaded', () => {
-    const app = new GameApp();
-    app.gameLoop();
+    window.gameApp = new GameApp(); // Global erişim için
+    window.gameApp.gameLoop();
 });

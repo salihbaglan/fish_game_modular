@@ -99,8 +99,24 @@ export default class UI {
         if(this.soundToggle) {
             this.soundToggle.addEventListener('change', () => {
                 const isEnabled = this.soundToggle.checked;
+
+                // Switch sesi çal (ses kapatılmadan önce, ama sadece açıkken)
+                if (window.gameApp && window.gameApp.audioManager) {
+                    // Eğer ses açılıyorsa veya zaten açıksa ses çal
+                    if (isEnabled || window.gameApp.audioManager.isEnabled) {
+                        setTimeout(() => {
+                            window.gameApp.audioManager.play('switchToggle');
+                        }, 50); // Kısa gecikme ile çakışmayı önle
+                    }
+                }
+
                 localStorage.setItem('soundEnabled', isEnabled);
                 console.log('Ses efektleri:', isEnabled ? 'Açık' : 'Kapalı');
+
+                // AudioManager'a bildir (eğer varsa)
+                if (window.gameApp && window.gameApp.audioManager) {
+                    window.gameApp.audioManager.setEnabled(isEnabled);
+                }
             });
         }
 
@@ -108,6 +124,14 @@ export default class UI {
         if(this.vfxToggle) {
             this.vfxToggle.addEventListener('change', () => {
                 const isEnabled = this.vfxToggle.checked;
+
+                // Switch sesi çal (sadece ses açıksa)
+                if (window.gameApp && window.gameApp.audioManager && window.gameApp.audioManager.isEnabled) {
+                    setTimeout(() => {
+                        window.gameApp.audioManager.play('switchToggle');
+                    }, 50); // Kısa gecikme ile çakışmayı önle
+                }
+
                 localStorage.setItem('vfxEnabled', isEnabled);
                 console.log('Görsel efektler:', isEnabled ? 'Açık' : 'Kapalı');
             });
@@ -205,6 +229,11 @@ export default class UI {
         if (this.totalFishCurrency >= cost) {
             this.totalFishCurrency -= cost;
             data.level++;
+
+            // Upgrade sesi çal
+            if (window.gameApp && window.gameApp.audioManager && window.gameApp.audioManager.isEnabled) {
+                window.gameApp.audioManager.play('upgradeButton');
+            }
 
             // LocalStorage'a kaydet
             localStorage.setItem('totalFishCurrency', this.totalFishCurrency);

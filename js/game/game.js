@@ -5,10 +5,11 @@ import { getFishColor, calculateXPRequired, checkCollision } from '../utils/util
 import FishAssets from '../utils/assets.js';
 
 export default class Game {
-    constructor(canvas, effects, ui) { // ui parametresini ekledik
+    constructor(canvas, effects, ui, audioManager) { // audioManager parametresini ekledik
         this.canvas = canvas;
         this.effects = effects;
         this.ui = ui; // ui referansını saklıyoruz
+        this.audioManager = audioManager; // audioManager referansını saklıyoruz
         this.fishAssets = new FishAssets();
         
         // Zaman yavaşlatma sistemi
@@ -373,6 +374,11 @@ export default class Game {
     
     // Balığı kancaya takma
     hookFish(fish, hook) {
+        // Kancaya takılma sesi
+        if (this.audioManager) {
+            this.audioManager.play('hooked');
+        }
+
         // Balığın ağzını kancaya hizalama
         const mouthToHookX = hook.x - fish.x;
         const mouthToHookY = hook.y - fish.y;
@@ -623,7 +629,12 @@ export default class Game {
         if (this.currentXP >= this.xpToNextLevel) {
             this.currentXP -= this.xpToNextLevel;
             this.playerLevel++;
-            
+
+            // Level up sesi
+            if (this.audioManager) {
+                this.audioManager.play('levelUp');
+            }
+
             // Oyuncu büyüme
             this.player.baseSize += 5;
             this.player.size = this.player.baseSize;
@@ -1371,7 +1382,12 @@ export default class Game {
                 this.magnetEffect.active = true;
                 this.magnetEffect.maxDuration = this.getMagnetDuration() * 60;
                 this.magnetEffect.duration = this.magnetEffect.maxDuration;
-                
+
+                // Item toplama sesi
+                if (this.audioManager) {
+                    this.audioManager.play('itemCollect');
+                }
+
                 const collectParticles = this.effects.createParticles(
                     magnet.x,
                     magnet.y,
@@ -1399,7 +1415,12 @@ export default class Game {
                 this.shieldEffect.active = true;
                 this.shieldEffect.maxDuration = this.getShieldDuration() * 60;
                 this.shieldEffect.duration = this.shieldEffect.maxDuration;
-                
+
+                // Item toplama sesi
+                if (this.audioManager) {
+                    this.audioManager.play('itemCollect');
+                }
+
                 const collectParticles = this.effects.createParticles(
                     shield.x,
                     shield.y,
@@ -1442,7 +1463,12 @@ export default class Game {
                     this.fishCurrency += 1;
                     this.ui.addFishCurrency(1);
                     this.sessionEatenFish += 1;
-                    
+
+                    // Balık yeme sesi
+                    if (this.audioManager) {
+                        this.audioManager.play('eatFish');
+                    }
+
                     const newParticles = this.effects.createParticles(
                         enemy.x,
                         enemy.y,
