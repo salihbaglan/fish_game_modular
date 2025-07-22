@@ -694,7 +694,7 @@ export default class Game {
             
             // Hareket yönüne göre direction değerini ayarla
             if (Math.abs(dx) > 0.1) { // Küçük hareketleri görmezden gel
-                this.player.direction = dx > 0 ? -1 : 1; // Yönü tersine çevir
+                this.player.direction = dx > 0 ? 1 : -1; // Sağa gidiyorsa sağa bak, sola gidiyorsa sola bak
             }
             
             this.player.x += dx * currentSpeed;

@@ -1000,7 +1000,7 @@ export default class Renderer {
         }
 
         // Oyuncu balığını çiz
-        const direction = player.isHooked ? 0 : (mouseX > player.x ? 1 : -1);
+        const direction = player.isHooked ? 0 : player.direction;
         this.drawFish(
             player.x,
             player.y,
