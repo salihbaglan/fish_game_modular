@@ -918,6 +918,9 @@ export default class Game {
             }
         }
 
+        // Timer güncelleme
+        this.gameTimer += this.timeScale;
+
         // Diğer güncellemeler
         this.updateProgressiveSpawning();
         this.checkSurpriseEvents();
