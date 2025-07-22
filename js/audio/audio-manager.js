@@ -3,11 +3,12 @@
 export default class AudioManager {
     constructor() {
         this.sounds = {};
+        this.activeSfxInstances = []; // Aktif SFX instance'larını takip et
         this.isEnabled = true;
         this.masterVolume = 0.7;
         this.musicVolume = 0.5;
         this.sfxVolume = 0.8;
-        
+
         // Ses dosyalarını yükle
         this.loadSounds();
     }
@@ -117,12 +118,28 @@ export default class AudioManager {
                 newAudio.volume = sound.config.volume * volume * this.masterVolume;
                 newAudio.preload = 'auto';
 
+                // Aktif instance'ları takip et
+                this.activeSfxInstances.push(newAudio);
+
+                // Ses bittiğinde listeden çıkar
+                newAudio.addEventListener('ended', () => {
+                    const index = this.activeSfxInstances.indexOf(newAudio);
+                    if (index > -1) {
+                        this.activeSfxInstances.splice(index, 1);
+                    }
+                });
+
                 const playPromise = newAudio.play();
                 if (playPromise !== undefined) {
                     playPromise.catch(error => {
                         // Sessizce geç, çok fazla log spam'i önlemek için
                         if (error.name !== 'AbortError') {
                             console.warn(`Ses çalınamadı: ${soundName}`, error);
+                        }
+                        // Hata durumunda da listeden çıkar
+                        const index = this.activeSfxInstances.indexOf(newAudio);
+                        if (index > -1) {
+                            this.activeSfxInstances.splice(index, 1);
                         }
                     });
                 }
@@ -164,9 +181,33 @@ export default class AudioManager {
 
     // Tüm sesleri durdur
     stopAll() {
+        // Ana ses dosyalarını durdur
         Object.keys(this.sounds).forEach(soundName => {
             this.stop(soundName);
         });
+
+        // Aktif SFX instance'larını durdur
+        this.activeSfxInstances.forEach(audio => {
+            try {
+                audio.pause();
+                audio.currentTime = 0;
+            } catch (error) {
+                // Sessizce geç
+            }
+        });
+
+        // Listeyi temizle
+        this.activeSfxInstances = [];
+
+        // Ekstra güvenlik: Tüm audio elementlerini durdur
+        try {
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        } catch (error) {
+            // Sessizce geç
+        }
     }
 
     // Müzik çal (önceki müziği durdur)

@@ -196,6 +196,9 @@ class GameApp {
         const soundEnabled = this.ui.isSoundEnabled();
         this.audioManager.setEnabled(soundEnabled);
         if (soundEnabled) {
+            // Önce tüm sesleri durdur (game over sesi dahil)
+            this.audioManager.stopAll();
+            // Sonra oyun müziğini başlat
             this.audioManager.playMusic('gameLoop');
         }
 
