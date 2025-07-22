@@ -1,0 +1,65 @@
+/* Base styles */
+@import 'base/reset.css';
+@import 'base/animations.css';
+
+/* Layouts */
+@import 'layouts/game-container.css';
+
+/* Components */
+@import 'components/ui.css';
+@import 'components/buttons.css';
+@import 'components/progress-bars.css';
+@import 'components/panels.css';
+@import 'components/store.css';
+@import 'components/settings.css';
+@import 'components/game-overlay.css';
+
+/* Screens */
+@import 'screens/start-screen.css';
+@import 'screens/game-over.css';
+
+/* Responsive Media Queries */
+@media (max-width: 900px) {
+    .ui {
+        font-size: clamp(11px, 2.5vw, 15px);
+        padding: 0 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    .ui {
+        flex-direction: column;
+        align-items: stretch;
+        font-size: clamp(10px, 3vw, 13px);
+        padding: 0 2px;
+        gap: 2px;
+    }
+    
+    .ui-left.ui-top-left,
+    .ui-right.ui-top-right {
+        padding: 4px 0 0 4px;
+        gap: 2px;
+    }
+    
+    .ui-right.ui-top-right {
+        padding: 4px 4px 0 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .ui {
+        font-size: 9px;
+        padding: 0 1px;
+    }
+    
+    .ui-item {
+        font-size: 8px;
+        padding: 0 2px;
+        gap: 1px;
+    }
+    
+    .ui-icon {
+        width: 10px;
+        height: 10px;
+    }
+}

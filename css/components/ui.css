@@ -1,0 +1,190 @@
+.ui {
+    position: static;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    z-index: auto;
+    display: block;
+}
+
+.ui-left.ui-top-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 0 0 8px;
+    background: none;
+    box-shadow: none;
+    gap: 4px;
+}
+
+.ui-right.ui-top-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1001;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 8px 8px 0 0;
+    background: none;
+    box-shadow: none;
+    gap: 4px;
+}
+
+.ui-center {
+    position: fixed !important;
+    left: 10px !important;
+    right: auto !important;
+    bottom: 20px !important;
+    top: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    z-index: 1000 !important;
+    pointer-events: none;
+}
+
+.ui-center > * {
+    pointer-events: auto;
+}
+
+/* UI Icon Stilleri */
+.ui-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: clamp(2px, 1vw, 6px) clamp(4px, 2vw, 12px);
+    border-radius: clamp(8px, 2vw, 15px);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: clamp(10px, 2.5vw, 16px);
+    max-width: 98vw;
+    box-sizing: border-box;
+}
+
+.ui-icon {
+    width: clamp(14px, 4vw, 22px);
+    height: clamp(14px, 4vw, 22px);
+    object-fit: contain;
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.7));
+}
+
+.score-popup {
+    position: absolute;
+    color: #FFD700;
+    font-weight: bold;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    pointer-events: none;
+    z-index: 70;
+    animation: scoreFloat 1s ease-out forwards;
+}
+
+.bubbles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: bubbleFloat 3s infinite linear;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #FFD700;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 60;
+}
+
+/* XP ve Level Up Popup Stilleri */
+.mmorpg-xp-popup {
+    position: absolute;
+    pointer-events: none;
+    z-index: 90;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    text-align: center;
+    animation: mmorpgXpFloat 1.5s ease-out forwards;
+}
+
+.mmorpg-xp-popup .xp-text {
+    font-size: 24px;
+    color: #FFD700;
+    text-shadow: 0 0 10px #FFD700, 2px 2px 4px rgba(0,0,0,0.8);
+    position: relative;
+    z-index: 2;
+}
+
+.mmorpg-xp-popup .xp-label {
+    font-size: 14px;
+    color: #FFA500;
+    margin-top: -5px;
+    position: relative;
+    z-index: 1;
+}
+
+.mmorpg-levelup-popup {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 100;
+    text-align: center;
+    animation: mmorpgLevelUpFloat 3s ease-out forwards;
+}
+
+.mmorpg-levelup-popup .levelup-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,165,0,0.2) 50%, transparent 100%);
+    border-radius: 50%;
+    animation: levelUpGlow 3s ease-out forwards;
+}
+
+.mmorpg-levelup-popup .levelup-main {
+    position: relative;
+    z-index: 2;
+}
+
+.mmorpg-levelup-popup .levelup-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 20px #FFD700, 3px 3px 6px rgba(0,0,0,0.8);
+    margin-bottom: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.mmorpg-levelup-popup .levelup-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: #FF6B35;
+    text-shadow: 0 0 15px #FF6B35, 3px 3px 6px rgba(0,0,0,0.8);
+    margin-bottom: 5px;
+    font-family: Arial, sans-serif;
+}
+
+.mmorpg-levelup-popup .levelup-subtitle {
+    font-size: 18px;
+    color: #FFA500;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    font-family: Arial, sans-serif;
+} 

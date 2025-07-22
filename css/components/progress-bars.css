@@ -1,0 +1,161 @@
+.floating-xp-container {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    width: 100px;
+    left: 0;
+    top: 0;
+    transform: translate(0, 0);
+    will-change: transform;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.level-indicator {
+    background: rgba(0, 0, 0, 0.6);
+    color: #FFD700;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    backdrop-filter: blur(5px);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    margin-left: -50%; /* Seviye göstergesini merkeze hizala */
+}
+
+.xp-bar {
+    width: clamp(80px, 20vw, 120px);
+    height: clamp(8px, 2vw, 12px);
+    background: rgba(0,0,0,0.4);
+    border-radius: clamp(4px, 1vw, 8px);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    backdrop-filter: blur(5px);
+    margin-left: -50%; /* Bar'ı ortala */
+}
+
+.xp-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #9932CC, #FF69B4, #FFD700);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.xp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(8px, 1.5vw, 10px);
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Mıknatıs ve Kalkan Bar Stilleri */
+.magnet-bar, .shield-bar {
+    display: none; /* Varsayılan olarak gizli */
+    align-items: center;
+    background: rgba(30, 30, 40, 0.75);
+    border-radius: 18px;
+    padding: 10px 20px;
+    box-shadow: 0 6px 24px 0 rgba(0,0,0,0.35), 0 1.5px 8px 0 #FFD70044;
+    min-width: 180px;
+    max-width: 260px;
+    height: 44px;
+    margin-bottom: 14px;
+    border: 2.5px solid #FFD70055;
+    backdrop-filter: blur(8px) saturate(1.2);
+    transition: all 0.3s ease;
+}
+
+.magnet-bar.active, .shield-bar.active {
+    display: flex !important;
+    animation: barPopIn 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+}
+
+.magnet-bar img, .shield-bar img {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.magnet-progress-container, .shield-progress-container {
+    flex: 1;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 7px;
+    overflow: hidden;
+    margin-right: 12px;
+    border: 2px solid #FFD70099;
+    position: relative;
+    box-shadow: 0 1.5px 6px #FFD70033;
+}
+
+/* Progress Bar Animasyonları */
+@keyframes decreaseProgress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+.magnet-progress {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+    border-radius: 7px;
+    box-shadow: 0 0 10px 2px #FFD70055;
+}
+
+.shield-progress {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #87CEEB 0%, #00BFFF 100%);
+    border-radius: 7px;
+    box-shadow: 0 0 10px 2px #00BFFF55;
+}
+
+.magnet-progress.decreasing, .shield-progress.decreasing {
+    animation: decreaseProgress linear forwards;
+}
+
+.magnet-progress.paused, .shield-progress.paused {
+    animation-play-state: paused;
+}
+
+.magnet-text, .shield-text {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    min-width: 32px;
+    text-align: right;
+    letter-spacing: 1px;
+}
+
+/* Pop-in Animasyonu */
+@keyframes barPopIn {
+    0% {
+        transform: scale(0.7) translateY(30px);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.05) translateY(-4px);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+} 

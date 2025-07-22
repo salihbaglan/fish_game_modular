@@ -1,0 +1,93 @@
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    background-color: rgba(0,0,0,0.15);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.setting-item label {
+    font-size: 16px;
+}
+
+/* Switch (Toggle) Stilleri */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 28px;
+    width: clamp(32px, 8vw, 50px);
+    height: clamp(16px, 4vw, 28px);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: clamp(10px, 2vw, 20px);
+    width: clamp(10px, 2vw, 20px);
+    left: clamp(2px, 0.5vw, 4px);
+    bottom: clamp(2px, 0.5vw, 4px);
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider:before {
+    transform: translateX(clamp(12px, 3vw, 22px));
+}
+
+/* Dil Seçimi Dropdown Stilleri */
+#languageSelect {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    min-width: 150px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white' width='18px' height='18px'%3e%3cpath d='M7 10l5 5 5-5H7z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+#languageSelect:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+#languageSelect:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+#languageSelect option {
+    background-color: #004080;
+    color: white;
+    padding: 10px;
+} 
