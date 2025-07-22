@@ -912,12 +912,20 @@ export default class Renderer {
         
         if (particle.type === 'bubble') {
             // Baloncuk çizimi (Buble.png ile)
-            this.ctx.globalAlpha = particle.alpha * particle.life;
+            const alpha = particle.alpha * particle.life;
+            this.ctx.globalAlpha = alpha;
             this.ctx.translate(particle.x, particle.y);
             this.ctx.rotate(particle.rotation);
-            
+
             if (this.bubbleLoaded && this.bubbleImage.complete) {
                 const size = particle.size * cameraZoom;
+
+                // Baloncukları daha belirgin yapmak için glow efekti
+                if (alpha > 0.4 && size > 6) {
+                    this.ctx.shadowColor = 'rgba(135, 206, 235, 0.4)';
+                    this.ctx.shadowBlur = size * 0.25;
+                }
+
                 this.ctx.drawImage(
                     this.bubbleImage,
                     -size/2,
@@ -925,12 +933,31 @@ export default class Renderer {
                     size,
                     size
                 );
+
+                // Shadow'u temizle
+                this.ctx.shadowColor = 'transparent';
+                this.ctx.shadowBlur = 0;
             } else {
-                // Fallback: Basit daire baloncuk
-                this.ctx.strokeStyle = 'rgba(100, 200, 255, 0.8)';
-                this.ctx.lineWidth = 2;
+                // Fallback: Gelişmiş daire baloncuk
+                const size = particle.size * cameraZoom;
+
+                // Gradient ile daha belirgin baloncuk
+                const gradient = this.ctx.createRadialGradient(
+                    -size * 0.2, -size * 0.2, 0,
+                    0, 0, size/2
+                );
+                gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                gradient.addColorStop(0.3, 'rgba(135, 206, 235, 0.8)');
+                gradient.addColorStop(1, 'rgba(100, 200, 255, 0.5)');
+
+                this.ctx.fillStyle = gradient;
                 this.ctx.beginPath();
-                this.ctx.arc(0, 0, particle.size/2 * cameraZoom, 0, Math.PI * 2);
+                this.ctx.arc(0, 0, size/2, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Daha belirgin kenarlık
+                this.ctx.strokeStyle = 'rgba(135, 206, 235, 0.9)';
+                this.ctx.lineWidth = 1.5;
                 this.ctx.stroke();
             }
         } else {

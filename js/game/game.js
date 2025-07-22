@@ -725,6 +725,14 @@ export default class Game {
             this.player.x += dx * currentSpeed;
             this.player.y += dy * currentSpeed;
 
+            // Hareket particle'ları oluştur (oyuncu hareket ediyorsa)
+            if (distance > 3) {
+                this.createMovementBubbles(this.player, true);
+            }
+        } else {
+            // Oyuncu hareket etmiyorsa rotasyonu sıfırla
+            this.player.useRotation = false;
+
             // Oyuncuyu ekran sınırları içinde tut
             this.player.x = Math.max(this.player.size / 2, Math.min(this.canvas.width - this.player.size / 2, this.player.x));
             this.player.y = Math.max(this.player.size / 2, Math.min(this.canvas.height - this.player.size / 2, this.player.y));
@@ -739,11 +747,17 @@ export default class Game {
             
             if (!enemy.isHooked) {  // Kancaya takılı değilse hareket edebilir
                 enemy.x += enemy.speed * enemy.direction * this.timeScale;
-                
+
                 if (enemy.type === 'jellyfish') {
                     enemy.pulsePhase += 0.05 * this.timeScale;
                 }
-                
+
+                // Hareket particle'ları oluştur (düşman balık hareket ediyorsa)
+                // Performans için sadece hızlı hareket eden balıklarda ve rastgele olarak
+                if (Math.abs(enemy.speed) > 1 && Math.random() < 0.3) {
+                    this.createMovementBubbles(enemy, false);
+                }
+
                 // Düşman balık boyutunu sabit tut
                 enemy.size = enemy.baseSize;
             }
@@ -854,14 +868,29 @@ export default class Game {
             const particle = this.particles[i];
             particle.x += particle.vx * this.timeScale;
             particle.y += particle.vy * this.timeScale;
-            
+
             if (particle.type === 'bubble') {
-                particle.life -= 0.008 * this.timeScale;
+                particle.life -= 0.012 * this.timeScale; // Daha hızlı yaşam kaybı
                 particle.rotation += particle.rotationSpeed * this.timeScale;
-                particle.vy *= Math.pow(0.995, this.timeScale);
-                particle.vx *= Math.pow(0.98, this.timeScale);
+
+                // Baloncuklar yavaş yavaş yukarı çıkar ve yavaşlar
+                particle.vy -= 0.008 * this.timeScale; // Hafif yukarı doğru kuvvet
+                particle.vy *= Math.pow(0.995, this.timeScale); // Y hızı yavaşlama
+                particle.vx *= Math.pow(0.990, this.timeScale); // X hızı yavaşlama
+
+                // Baloncuklar zamanla büyür (daha belirgin büyüme)
+                if (particle.life > 0.7) {
+                    particle.size *= Math.pow(1.0015, this.timeScale);
+                }
             } else {
                 particle.life -= CONFIG.PARTICLE_LIFE_DECREMENT * this.timeScale;
+            }
+
+            // Yaşam süresi biten veya ekran dışına çıkan particle'ları temizle
+            if (particle.life <= 0 ||
+                particle.x < -100 || particle.x > this.canvas.width + 100 ||
+                particle.y < -100 || particle.y > this.canvas.height + 100) {
+                this.particles.splice(i, 1);
             }
         }
 
@@ -1184,6 +1213,68 @@ export default class Game {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // Hareket baloncukları oluştur
+    createMovementBubbles(fish, isPlayer) {
+        // Performans için particle sayısını kontrol et
+        if (this.particles.length > 150) {
+            return; // Çok fazla particle varsa yeni oluşturma
+        }
+
+        // Baloncuk oluşturma sıklığını kontrol et
+        if (!fish.lastBubbleTime) fish.lastBubbleTime = 0;
+        const currentTime = Date.now();
+
+        // Hız faktörünü hesapla
+        const speed = isPlayer ?
+            Math.sqrt((fish.x - (fish.lastX || fish.x))**2 + (fish.y - (fish.lastY || fish.y))**2) :
+            Math.abs(fish.speed || 1);
+
+        // Hıza göre baloncuk sıklığını ayarla (daha seyrek)
+        const baseInterval = isPlayer ? 200 : 300; // Daha uzun interval
+        const speedFactor = Math.max(0.3, Math.min(1.5, speed / 2));
+        const bubbleInterval = baseInterval / speedFactor;
+
+        if (currentTime - fish.lastBubbleTime < bubbleInterval) {
+            return;
+        }
+
+        fish.lastBubbleTime = currentTime;
+
+        // Son pozisyonu kaydet
+        fish.lastX = fish.x;
+        fish.lastY = fish.y;
+
+        // Balığın arkasından baloncuk çıkacak pozisyonu hesapla
+        const fishDirection = fish.direction || (fish.speed > 0 ? 1 : -1);
+        const backOffsetX = fishDirection > 0 ? -fish.size * 0.35 : fish.size * 0.35;
+        const backOffsetY = (Math.random() - 0.5) * fish.size * 0.25;
+
+        // Baloncuk sayısını azalt (performans için)
+        const sizeBasedCount = Math.max(1, Math.floor(fish.size / 50)); // Daha az baloncuk
+        const bubbleCount = Math.min(2, sizeBasedCount); // Maksimum 2 baloncuk
+
+        for (let i = 0; i < bubbleCount; i++) {
+            const spreadX = (Math.random() - 0.5) * fish.size * 0.1;
+            const spreadY = (Math.random() - 0.5) * fish.size * 0.1;
+
+            const bubble = {
+                x: fish.x + backOffsetX + spreadX,
+                y: fish.y + backOffsetY + spreadY,
+                vx: -fishDirection * (0.2 + Math.random() * 0.3), // Daha yavaş
+                vy: (Math.random() - 0.5) * 0.5, // Daha az hareket
+                life: 1,
+                maxLife: 1,
+                size: 5 + Math.random() * 6 + (isPlayer ? 2 : 0), // Daha belirgin baloncuklar
+                type: 'bubble',
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.015,
+                alpha: 0.6 + Math.random() * 0.3
+            };
+
+            this.particles.push(bubble);
+        }
     }
 
     // Yavaşlatmadan çıkış fonksiyonu
