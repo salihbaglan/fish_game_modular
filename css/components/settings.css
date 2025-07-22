@@ -34,26 +34,37 @@
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: .4s;
+    transition: all 0.4s ease;
     border-radius: 28px;
-    width: clamp(32px, 8vw, 50px);
-    height: clamp(16px, 4vw, 28px);
+    width: 50px;
+    height: 28px;
+}
+
+/* Kapalı durum - gri */
+.slider {
+    background-color: #666;
+}
+
+/* Açık durum - yeşil */
+input:checked + .slider {
+    background-color: #4CAF50;
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: clamp(10px, 2vw, 20px);
-    width: clamp(10px, 2vw, 20px);
-    left: clamp(2px, 0.5vw, 4px);
-    bottom: clamp(2px, 0.5vw, 4px);
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    top: 3px;
     background-color: white;
-    transition: .4s;
+    transition: all 0.4s ease;
     border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider:before {
-    transform: translateX(clamp(12px, 3vw, 22px));
+    transform: translateX(22px);
 }
 
 /* Dil Seçimi Dropdown Stilleri */

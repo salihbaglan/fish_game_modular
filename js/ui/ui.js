@@ -57,6 +57,9 @@ export default class UI {
             }
         };
 
+        // Ayarları yükle
+        this.loadSettings();
+
         this.initStartScreenEventListeners();
         this.updateShopDisplay();
 
@@ -92,19 +95,79 @@ export default class UI {
             shieldUpgradeBtn.addEventListener('click', () => this.upgradeItem('shield'));
         }
 
+        // Ses ayarları
         if(this.soundToggle) {
-            this.soundToggle.addEventListener('change', (event) => {
-                // Ses efektlerini aç/kapat
-                // Burada ses efektlerini yönetecek bir fonksiyon çağrılabilir
+            this.soundToggle.addEventListener('change', () => {
+                const isEnabled = this.soundToggle.checked;
+                localStorage.setItem('soundEnabled', isEnabled);
+                console.log('Ses efektleri:', isEnabled ? 'Açık' : 'Kapalı');
             });
         }
 
+        // Görsel efekt ayarları
         if(this.vfxToggle) {
-            this.vfxToggle.addEventListener('change', (event) => {
-                // Görsel efektleri aç/kapat
-                // Burada görsel efektleri yönetecek bir fonksiyon çağrılabilir
+            this.vfxToggle.addEventListener('change', () => {
+                const isEnabled = this.vfxToggle.checked;
+                localStorage.setItem('vfxEnabled', isEnabled);
+                console.log('Görsel efektler:', isEnabled ? 'Açık' : 'Kapalı');
             });
         }
+
+        // Dil ayarları
+        const languageSelect = document.getElementById('languageSelect');
+        if(languageSelect) {
+            languageSelect.addEventListener('change', () => {
+                const selectedLanguage = languageSelect.value;
+                localStorage.setItem('selectedLanguage', selectedLanguage);
+                console.log('Dil değiştirildi:', selectedLanguage);
+                // Burada dil değiştirme fonksiyonu çağrılabilir
+            });
+        }
+    }
+
+    // Ayarları yükle
+    loadSettings() {
+        // Ses ayarları
+        const soundEnabled = localStorage.getItem('soundEnabled');
+        if (soundEnabled !== null) {
+            this.soundToggle.checked = soundEnabled === 'true';
+        } else {
+            this.soundToggle.checked = true; // Default açık
+            localStorage.setItem('soundEnabled', 'true');
+        }
+
+        // Görsel efekt ayarları
+        const vfxEnabled = localStorage.getItem('vfxEnabled');
+        if (vfxEnabled !== null) {
+            this.vfxToggle.checked = vfxEnabled === 'true';
+        } else {
+            this.vfxToggle.checked = true; // Default açık
+            localStorage.setItem('vfxEnabled', 'true');
+        }
+
+        // Dil ayarları
+        const languageSelect = document.getElementById('languageSelect');
+        const selectedLanguage = localStorage.getItem('selectedLanguage');
+        if (selectedLanguage && languageSelect) {
+            languageSelect.value = selectedLanguage;
+        } else {
+            // Default İngilizce
+            if (languageSelect) languageSelect.value = 'en';
+            localStorage.setItem('selectedLanguage', 'en');
+        }
+    }
+
+    // Ayar getter metodları
+    isSoundEnabled() {
+        return localStorage.getItem('soundEnabled') === 'true';
+    }
+
+    isVfxEnabled() {
+        return localStorage.getItem('vfxEnabled') === 'true';
+    }
+
+    getCurrentLanguage() {
+        return localStorage.getItem('selectedLanguage') || 'en';
     }
 
     updateTotalFishCurrencyDisplay() {
