@@ -34,10 +34,31 @@ export default class UI {
         this.vfxToggle = document.getElementById('vfxToggle');
         
         // Başlangıçta toplam balık sayısını yükle (localStorage'dan veya varsayılan)
-        this.totalFishCurrency = parseInt(localStorage.getItem('totalFishCurrency')) || 0;
+        this.totalFishCurrency = parseInt(localStorage.getItem('totalFishCurrency')) || 10000;
         this.updateTotalFishCurrencyDisplay();
 
+        // Upgrade seviyeleri
+        this.upgradeData = {
+            magnet: {
+                level: parseInt(localStorage.getItem('magnetLevel')) || 1,
+                maxLevel: 5,
+                baseDuration: 10, // saniye
+                maxDuration: 30,  // saniye
+                baseCost: 50,
+                costMultiplier: 2.5
+            },
+            shield: {
+                level: parseInt(localStorage.getItem('shieldLevel')) || 1,
+                maxLevel: 5,
+                baseDuration: 10, // saniye
+                maxDuration: 30,  // saniye
+                baseCost: 75,
+                costMultiplier: 2.5
+            }
+        };
+
         this.initStartScreenEventListeners();
+        this.updateShopDisplay();
 
         // Overlay elementleri
         this.overlay = document.querySelector('.game-overlay');
@@ -59,30 +80,17 @@ export default class UI {
             });
         });
 
-        // Örnek Yükseltme Butonları (Daha sonra game logic ile entegre edilecek)
-        this.upgradeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const upgradeType = button.dataset.upgrade;
-                // Gerekli para birimi miktarını al (şimdilik sabit)
-                const cost = upgradeType === 'magnet' ? 100 : 150;
-                if (this.totalFishCurrency >= cost) {
-                    this.totalFishCurrency -= cost;
-                    localStorage.setItem('totalFishCurrency', this.totalFishCurrency);
-                    this.updateTotalFishCurrencyDisplay();
-                    alert(getString('upgradeSuccessful', { item: getString(upgradeType === 'magnet' ? 'upgradeMagnetLabel' : 'upgradeShieldLabel') }));
-                    // İlgili level span'ını güncelle (örnek)
-                    const levelSpan = document.getElementById(`${upgradeType}Level`);
-                    if(levelSpan) {
-                        let currentLevelText = levelSpan.textContent.match(/\d+/); // Sadece sayıyı al
-                        let currentLevel = currentLevelText ? parseInt(currentLevelText[0]) : 1;
-                        levelSpan.innerHTML = `<span data-translate-key="levelAbbreviation">${getString('levelAbbreviation')}</span> ${currentLevel + 1}`;
-                    }
-                    updateDynamicTexts(); // Buton metinlerini ve maliyetlerini güncelle
-                } else {
-                    alert(getString('insufficientFish'));
-                }
-            });
-        });
+        // Yeni Yükseltme Sistemi
+        const magnetUpgradeBtn = document.getElementById('magnetUpgradeBtn');
+        const shieldUpgradeBtn = document.getElementById('shieldUpgradeBtn');
+
+        if (magnetUpgradeBtn) {
+            magnetUpgradeBtn.addEventListener('click', () => this.upgradeItem('magnet'));
+        }
+
+        if (shieldUpgradeBtn) {
+            shieldUpgradeBtn.addEventListener('click', () => this.upgradeItem('shield'));
+        }
 
         if(this.soundToggle) {
             this.soundToggle.addEventListener('change', (event) => {
@@ -104,6 +112,106 @@ export default class UI {
             this.totalFishCountElement.textContent = this.totalFishCurrency;
         }
     }
+
+    // Upgrade hesaplamaları
+    calculateUpgradeCost(upgradeType, level) {
+        const data = this.upgradeData[upgradeType];
+        if (level >= data.maxLevel) return 0;
+
+        // Exponential cost scaling: baseCost * (multiplier ^ (level - 1))
+        return Math.floor(data.baseCost * Math.pow(data.costMultiplier, level - 1));
+    }
+
+    calculateUpgradeDuration(upgradeType, level) {
+        const data = this.upgradeData[upgradeType];
+        // Linear progression from baseDuration to maxDuration
+        const progress = (level - 1) / (data.maxLevel - 1);
+        return Math.floor(data.baseDuration + (data.maxDuration - data.baseDuration) * progress);
+    }
+
+    // Upgrade işlemi
+    upgradeItem(upgradeType) {
+        const data = this.upgradeData[upgradeType];
+
+        if (data.level >= data.maxLevel) {
+            alert('Bu öğe maksimum seviyede!');
+            return;
+        }
+
+        const cost = this.calculateUpgradeCost(upgradeType, data.level);
+
+        if (this.totalFishCurrency >= cost) {
+            this.totalFishCurrency -= cost;
+            data.level++;
+
+            // LocalStorage'a kaydet
+            localStorage.setItem('totalFishCurrency', this.totalFishCurrency);
+            localStorage.setItem(`${upgradeType}Level`, data.level);
+
+            // UI'ı güncelle
+            this.updateTotalFishCurrencyDisplay();
+            this.updateShopDisplay();
+
+            alert(`${upgradeType === 'magnet' ? 'Mıknatıs' : 'Kalkan'} seviye ${data.level}'e yükseltildi!`);
+        } else {
+            alert('Yetersiz balık! Daha fazla balık yemelisiniz.');
+        }
+    }
+
+    // Shop görünümünü güncelle
+    updateShopDisplay() {
+        // Mıknatıs güncelleme
+        this.updateUpgradeDisplay('magnet');
+        // Kalkan güncelleme
+        this.updateUpgradeDisplay('shield');
+    }
+
+    updateUpgradeDisplay(upgradeType) {
+        const data = this.upgradeData[upgradeType];
+        const level = data.level;
+        const maxLevel = data.maxLevel;
+
+        // Level display
+        const levelElement = document.getElementById(`${upgradeType}Level`);
+        if (levelElement) {
+            levelElement.textContent = level;
+        }
+
+        // Duration display
+        const durationElement = document.getElementById(`${upgradeType}Duration`);
+        if (durationElement) {
+            const duration = this.calculateUpgradeDuration(upgradeType, level);
+            durationElement.textContent = `${duration}s`;
+        }
+
+        // Cost display and button state
+        const costElement = document.getElementById(`${upgradeType}Cost`);
+        const upgradeBtn = document.getElementById(`${upgradeType}UpgradeBtn`);
+
+        if (level >= maxLevel) {
+            if (costElement) costElement.textContent = 'MAX';
+            if (upgradeBtn) {
+                upgradeBtn.disabled = true;
+                upgradeBtn.innerHTML = '<span>Maksimum Seviye</span>';
+            }
+        } else {
+            const cost = this.calculateUpgradeCost(upgradeType, level);
+            if (costElement) costElement.textContent = cost;
+            if (upgradeBtn) {
+                upgradeBtn.disabled = false;
+                upgradeBtn.innerHTML = `<span>Yükselt</span> (${cost} <img src="assets/images/eating_fish.png" class="currency-inline">)`;
+            }
+        }
+
+        // Progress bar and dots
+        const progressElement = document.getElementById(`${upgradeType}SliderProgress`);
+        if (progressElement) {
+            const progress = (level / maxLevel) * 100;
+            progressElement.style.width = `${progress}%`;
+        }
+
+
+    }
     
     // Oyuncuya balık para birimi ekle
     addFishCurrency(amount) {
@@ -118,9 +226,14 @@ export default class UI {
 
         const panelToShow = document.getElementById(panelId);
         const activeButton = document.querySelector(`.nav-btn[data-panel="${panelId}"]`);
-        
+
         if (panelToShow) panelToShow.classList.add('active');
         if (activeButton) activeButton.classList.add('active');
+
+        // Shop paneli açıldığında display'i güncelle
+        if (panelId === 'shopPanel') {
+            this.updateShopDisplay();
+        }
     }
 
     closePanel(panelId) {

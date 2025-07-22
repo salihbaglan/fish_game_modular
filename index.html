@@ -114,18 +114,57 @@
                 <div class="panel-content">
                     <!-- Mıknatıs Yükseltmesi -->
                     <div class="upgrade-item">
-                        <span data-translate-key="upgradeMagnetLabel">Mıknatıs Süresi</span>
+                        <div class="upgrade-header">
+                            <img src="assets/images/magnet.png" alt="Magnet" class="upgrade-icon">
+                            <div class="upgrade-info">
+                                <h3 data-translate-key="upgradeMagnetLabel">Mıknatıs</h3>
+                                <p class="upgrade-description">Süre: <span id="magnetDuration">10s</span></p>
+                            </div>
+                        </div>
                         <div class="upgrade-controls">
-                            <span id="magnetLevel"><span data-translate-key="levelAbbreviation">Sv.</span> 1</span>
-                            <button class="btn-upgrade" data-upgrade="magnet" data-cost="100"><span data-translate-key="upgradeButtonText">Yükselt</span> (100 <img src="assets/images/eating_fish.png" class="currency-inline">)</button>
+                            <div class="level-slider-container">
+                                <div class="level-display">
+                                    <span data-translate-key="levelAbbreviation">Sv.</span> <span id="magnetLevel">1</span>/5
+                                </div>
+                                <div class="level-slider">
+                                    <div class="slider-track">
+                                        <div class="slider-progress" id="magnetSliderProgress" style="width: 20%"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-upgrade" id="magnetUpgradeBtn" data-upgrade="magnet">
+                                <span data-translate-key="upgradeButtonText">Yükselt</span>
+                                (<span id="magnetCost">50</span> <img src="assets/images/eating_fish.png" class="currency-inline">)
+                            </button>
                         </div>
                     </div>
+
                     <!-- Kalkan Yükseltmesi -->
                     <div class="upgrade-item">
-                        <span data-translate-key="upgradeShieldLabel">Kalkan Süresi</span>
+                        <div class="upgrade-header">
+                            <img src="assets/images/Buble.png" alt="Shield" class="upgrade-icon">
+                            <div class="upgrade-info">
+                                <h3 data-translate-key="upgradeShieldLabel">Kalkan</h3>
+                                <p class="upgrade-description">Süre: <span id="shieldDuration">10s</span></p>
+                            </div>
+                        </div>
                         <div class="upgrade-controls">
-                            <span id="shieldLevel"><span data-translate-key="levelAbbreviation">Sv.</span> 1</span>
-                            <button class="btn-upgrade" data-upgrade="shield" data-cost="150"><span data-translate-key="upgradeButtonText">Yükselt</span> (150 <img src="assets/images/eating_fish.png" class="currency-inline">)</button>
+                            <div class="level-slider-container">
+                                <div class="level-display">
+                                    <span data-translate-key="levelAbbreviation">Sv.</span> <span id="shieldLevel">1</span>/5
+                                </div>
+                                <div class="level-slider">
+                                    <div class="slider-track">
+                                        <div class="slider-progress" id="shieldSliderProgress" style="width: 20%"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn-upgrade" id="shieldUpgradeBtn" data-upgrade="shield">
+                                <span data-translate-key="upgradeButtonText">Yükselt</span>
+                                (<span id="shieldCost">75</span> <img src="assets/images/eating_fish.png" class="currency-inline">)
+                            </button>
                         </div>
                     </div>
                 </div>

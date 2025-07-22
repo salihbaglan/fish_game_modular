@@ -89,14 +89,14 @@ export default class Game {
         this.magnetEffect = {
             active: false,
             duration: 0,
-            maxDuration: 1800 // 30 saniye (60 FPS * 30)
+            maxDuration: this.getMagnetDuration() * 60 // FPS'e çevir
         };
-        
+
         // Kalkan efekti
         this.shieldEffect = {
             active: false,
             duration: 0,
-            maxDuration: 1800 // 30 saniye (60 FPS * 30)
+            maxDuration: this.getShieldDuration() * 60 // FPS'e çevir
         };
         
         // Deniz anası efektleri
@@ -965,14 +965,14 @@ export default class Game {
         this.magnetEffect = {
             active: false,
             duration: 0,
-            maxDuration: 1800 // 30 saniye
+            maxDuration: this.getMagnetDuration() * 60
         };
-        
+
         // Kalkan efektini sıfırla
         this.shieldEffect = {
             active: false,
             duration: 0,
-            maxDuration: 1800 // 30 saniye
+            maxDuration: this.getShieldDuration() * 60
         };
         
         // Player'ı yeniden oluştur ve kanca durumunu temizle
@@ -1218,6 +1218,23 @@ export default class Game {
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
+    // Upgrade seviyelerine göre süre hesaplama
+    getMagnetDuration() {
+        const level = parseInt(localStorage.getItem('magnetLevel')) || 1;
+        const baseDuration = 10;
+        const maxDuration = 30;
+        const progress = (level - 1) / 4; // 5 seviye (0-4 progress)
+        return Math.floor(baseDuration + (maxDuration - baseDuration) * progress);
+    }
+
+    getShieldDuration() {
+        const level = parseInt(localStorage.getItem('shieldLevel')) || 1;
+        const baseDuration = 10;
+        const maxDuration = 30;
+        const progress = (level - 1) / 4; // 5 seviye (0-4 progress)
+        return Math.floor(baseDuration + (maxDuration - baseDuration) * progress);
+    }
+
     // Hareket baloncukları oluştur
     createMovementBubbles(fish, isPlayer) {
         // Performans için particle sayısını kontrol et
@@ -1352,6 +1369,7 @@ export default class Game {
             if (distance < 40 && !magnet.collected) {
                 magnet.collected = true;
                 this.magnetEffect.active = true;
+                this.magnetEffect.maxDuration = this.getMagnetDuration() * 60;
                 this.magnetEffect.duration = this.magnetEffect.maxDuration;
                 
                 const collectParticles = this.effects.createParticles(
@@ -1379,6 +1397,7 @@ export default class Game {
             if (distance < 40 && !shield.collected) {
                 shield.collected = true;
                 this.shieldEffect.active = true;
+                this.shieldEffect.maxDuration = this.getShieldDuration() * 60;
                 this.shieldEffect.duration = this.shieldEffect.maxDuration;
                 
                 const collectParticles = this.effects.createParticles(
