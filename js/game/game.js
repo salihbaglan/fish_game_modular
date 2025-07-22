@@ -1486,9 +1486,9 @@ export default class Game {
 
         const xpContainer = document.querySelector('.floating-xp-container');
         if (xpContainer && this.player) {
-            // Hedef pozisyonu hesapla - Y pozisyonunu daha yukarı al
+            // Hedef pozisyonu hesapla - Y pozisyonunu çok daha yukarı al
             const targetX = this.player.x - 30;
-            const targetY = this.player.y - this.player.size - 30;
+            const targetY = this.player.y - this.player.size - 60;
 
             // Mevcut pozisyonu yumuşak bir şekilde güncelle
             const smoothFactor = 1 - Math.pow(0.001, deltaTime / 16);

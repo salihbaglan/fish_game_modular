@@ -33,6 +33,7 @@
     font-size: 24px;
     color: #FFD700;
     margin: 0;
+    font-weight: 600;
 }
 
 .close-panel-btn {
@@ -40,7 +41,7 @@
     border: none;
     color: white;
     font-size: 20px;
-    font-weight: bold;
+    font-weight: 500;
     width: 30px;
     height: 30px;
     border-radius: 50%;
