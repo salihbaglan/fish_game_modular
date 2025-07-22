@@ -197,7 +197,6 @@ export default class UI {
         const data = this.upgradeData[upgradeType];
 
         if (data.level >= data.maxLevel) {
-            alert('Bu öğe maksimum seviyede!');
             return;
         }
 
@@ -214,10 +213,6 @@ export default class UI {
             // UI'ı güncelle
             this.updateTotalFishCurrencyDisplay();
             this.updateShopDisplay();
-
-            alert(`${upgradeType === 'magnet' ? 'Mıknatıs' : 'Kalkan'} seviye ${data.level}'e yükseltildi!`);
-        } else {
-            alert('Yetersiz balık! Daha fazla balık yemelisiniz.');
         }
     }
 
