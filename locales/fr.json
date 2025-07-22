@@ -26,5 +26,6 @@
   "insufficientFish": "Pas assez de poissons !",
   "upgradeSuccessful": "{item} amélioré !",
   "languageLabel": "Langue",
-  "timerLabel": "Temps"
+  "timerLabel": "Temps",
+  "touchToContinue": "Touchez pour continuer"
 }

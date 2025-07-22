@@ -3,6 +3,7 @@
 import CONFIG from '../utils/config.js';
 import { getFishColor, calculateXPRequired, checkCollision } from '../utils/utils.js';
 import FishAssets from '../utils/assets.js';
+import { getString } from '../utils/localization.js';
 
 export default class Game {
     constructor(canvas, effects, ui, audioManager) { // audioManager parametresini ekledik
@@ -682,7 +683,7 @@ export default class Game {
                 this.timeScale = this.slowMotionScale;
                 
                 if (this.ui && typeof this.ui.showMessage === 'function') {
-                    this.ui.showMessage('Devam etmek için dokun', 'info', 0, this.timeScale);
+                    this.ui.showMessage(getString('touchToContinue'), 'info', 0, this.timeScale);
                 }
             }
         }

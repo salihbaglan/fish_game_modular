@@ -31,5 +31,6 @@
   "newHighScore": "Neuer Rekord!",
   "congratsMessage": "Glückwunsch! Du hast eine tolle Punktzahl erreicht.",
   "legendaryMessage": "Legendäre Leistung! Du bist die Legende der Fische!",
-  "tryAgainMessage": "Du kannst es besser! Versuch es nochmal."
+  "tryAgainMessage": "Du kannst es besser! Versuch es nochmal.",
+  "touchToContinue": "Berühren zum Fortfahren"
 }

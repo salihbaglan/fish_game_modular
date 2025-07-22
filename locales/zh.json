@@ -31,5 +31,6 @@
   "newHighScore": "新纪录！",
   "congratsMessage": "恭喜！你取得了很高的分数。",
   "legendaryMessage": "传奇表现！你是鱼群中的传奇！",
-  "tryAgainMessage": "你可以做得更好！再试一次。"
+  "tryAgainMessage": "你可以做得更好！再试一次。",
+  "touchToContinue": "触摸继续"
 }
