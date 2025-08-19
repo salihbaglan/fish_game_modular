@@ -1,0 +1,25 @@
+{
+  "name": "fish_game_modular",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/salihbaglan/fish_game_modular.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/salihbaglan/fish_game_modular/issues"
+  },
+  "homepage": "https://github.com/salihbaglan/fish_game_modular#readme",
+  "description": "",
+  "devDependencies": {
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2"
+  }
+}
