@@ -566,17 +566,14 @@ export default class Game {
         // Patlama çapındaki tüm balıkları kontrol et
         this.checkExplosionDamage(bomb.x, bomb.y, explosionRadius);
         
-        // Gelişmiş patlama efektleri
+        // Gelişmiş patlama efektleri (baloncuklar olmadan)
         const explosionParticles = this.effects.createExplosionEffect(bomb.x, bomb.y);
         this.particles.push(...explosionParticles);
         
         // Su patlama efekti
         const waterParticles = this.effects.createWaterExplosionEffect(bomb.x, bomb.y, explosionRadius);
         this.particles.push(...waterParticles);
-        
-        // Baloncuk efekti (Buble.png ile)
-        const bubbleParticles = this.effects.createBubbleExplosionEffect(bomb.x, bomb.y);
-        this.particles.push(...bubbleParticles);
+
         
         // Ekran sallama efekti
         this.effects.createScreenShake(15, 400);
@@ -737,10 +734,7 @@ export default class Game {
             this.player.x += dx * currentSpeed;
             this.player.y += dy * currentSpeed;
 
-            // Hareket particle'ları oluştur (oyuncu hareket ediyorsa)
-            if (distance > 3) {
-                this.createMovementBubbles(this.player, true);
-            }
+            // Hareket baloncukları devre dışı
         } else {
             // Oyuncu hareket etmiyorsa rotasyonu sıfırla
             this.player.useRotation = false;
@@ -764,11 +758,7 @@ export default class Game {
                     enemy.pulsePhase += 0.05 * this.timeScale;
                 }
 
-                // Hareket particle'ları oluştur (düşman balık hareket ediyorsa)
-                // Performans için sadece hızlı hareket eden balıklarda ve rastgele olarak
-                if (Math.abs(enemy.speed) > 1 && Math.random() < 0.3) {
-                    this.createMovementBubbles(enemy, false);
-                }
+                // Hareket baloncukları devre dışı
 
                 // Düşman balık boyutunu sabit tut
                 enemy.size = enemy.baseSize;
@@ -1247,66 +1237,10 @@ export default class Game {
         return Math.floor(baseDuration + (maxDuration - baseDuration) * progress);
     }
 
-    // Hareket baloncukları oluştur
+    // Hareket baloncukları oluştur (devre dışı)
     createMovementBubbles(fish, isPlayer) {
-        // Performans için particle sayısını kontrol et
-        if (this.particles.length > 150) {
-            return; // Çok fazla particle varsa yeni oluşturma
-        }
-
-        // Baloncuk oluşturma sıklığını kontrol et
-        if (!fish.lastBubbleTime) fish.lastBubbleTime = 0;
-        const currentTime = Date.now();
-
-        // Hız faktörünü hesapla
-        const speed = isPlayer ?
-            Math.sqrt((fish.x - (fish.lastX || fish.x))**2 + (fish.y - (fish.lastY || fish.y))**2) :
-            Math.abs(fish.speed || 1);
-
-        // Hıza göre baloncuk sıklığını ayarla (daha seyrek)
-        const baseInterval = isPlayer ? 200 : 300; // Daha uzun interval
-        const speedFactor = Math.max(0.3, Math.min(1.5, speed / 2));
-        const bubbleInterval = baseInterval / speedFactor;
-
-        if (currentTime - fish.lastBubbleTime < bubbleInterval) {
-            return;
-        }
-
-        fish.lastBubbleTime = currentTime;
-
-        // Son pozisyonu kaydet
-        fish.lastX = fish.x;
-        fish.lastY = fish.y;
-
-        // Balığın arkasından baloncuk çıkacak pozisyonu hesapla
-        const fishDirection = fish.direction || (fish.speed > 0 ? 1 : -1);
-        const backOffsetX = fishDirection > 0 ? -fish.size * 0.35 : fish.size * 0.35;
-        const backOffsetY = (Math.random() - 0.5) * fish.size * 0.25;
-
-        // Baloncuk sayısını azalt (performans için)
-        const sizeBasedCount = Math.max(1, Math.floor(fish.size / 50)); // Daha az baloncuk
-        const bubbleCount = Math.min(2, sizeBasedCount); // Maksimum 2 baloncuk
-
-        for (let i = 0; i < bubbleCount; i++) {
-            const spreadX = (Math.random() - 0.5) * fish.size * 0.1;
-            const spreadY = (Math.random() - 0.5) * fish.size * 0.1;
-
-            const bubble = {
-                x: fish.x + backOffsetX + spreadX,
-                y: fish.y + backOffsetY + spreadY,
-                vx: -fishDirection * (0.2 + Math.random() * 0.3), // Daha yavaş
-                vy: (Math.random() - 0.5) * 0.5, // Daha az hareket
-                life: 1,
-                maxLife: 1,
-                size: 5 + Math.random() * 6 + (isPlayer ? 2 : 0), // Daha belirgin baloncuklar
-                type: 'bubble',
-                rotation: Math.random() * Math.PI * 2,
-                rotationSpeed: (Math.random() - 0.5) * 0.015,
-                alpha: 0.6 + Math.random() * 0.3
-            };
-
-            this.particles.push(bubble);
-        }
+        // Performans için balık hareket baloncukları devre dışı bırakıldı
+        return;
     }
 
     // Yavaşlatmadan çıkış fonksiyonu

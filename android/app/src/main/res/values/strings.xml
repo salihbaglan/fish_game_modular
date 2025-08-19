@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">fish-game-modular</string>
-    <string name="title_activity_main">fish-game-modular</string>
-    <string name="package_name">com.salihbaglan.fishgame</string>
-    <string name="custom_url_scheme">com.salihbaglan.fishgame</string>
+    <string name="app_name">Fish Adventure</string>
+    <string name="title_activity_main">Fish Adventure</string>
+    <string name="package_name">com.DagmaGameStudio.fishgame</string>
+    <string name="custom_url_scheme">com.DagmaGameStudio.fishgame</string>
 </resources>

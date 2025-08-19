@@ -48,8 +48,7 @@ class GameApp {
         // UI'ı güncelle
         this.updateUI();
         
-        // İlk bubble'ları oluştur
-        this.effects.createInitialBubbles(5);
+        // İlk bubble'lar devre dışı (performans için)
         
         // Butonlara event listener ekle
         this.setupEventListeners();
