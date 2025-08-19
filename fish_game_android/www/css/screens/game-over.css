@@ -1,0 +1,198 @@
+#gameOverScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+}
+
+#gameOverScreen .game-logo {
+    width: clamp(200px, 40%, 400px);
+    height: auto;
+    margin-bottom: 20px;
+    animation: fadeInDown 0.5s ease-out;
+}
+
+.gameover-panel {
+    background: rgba(0, 20, 40, 0.95);
+    border: 2px solid #2c5a7c;
+    border-radius: 15px;
+    padding: 20px;
+    width: clamp(280px, 90%, 500px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.gameover-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.gameover-header h1 {
+    color: #FFD700;
+    font-size: 2.5em;
+    margin: 10px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    display: inline-block;
+}
+
+.gameover-header h1:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #FFD700, transparent);
+}
+
+.gameover-body {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.gameover-row {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    transition: all 0.3s ease;
+}
+
+.gameover-row:hover {
+    background: rgba(0, 0, 0, 0.4);
+    transform: translateX(5px);
+}
+
+.gameover-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Removing all custom icon color filters to show original colors */
+.gameover-icon.score-icon,
+.gameover-icon.level-icon,
+.gameover-icon.fish-icon,
+.gameover-icon.time-icon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.gameover-row span {
+    color: #fff;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.new-highscore {
+    color: #FFD700;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-shadow: 0 0 8px #FFD700aa;
+    animation: shine 1.2s infinite alternate;
+}
+
+.gameover-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.gameover-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gameover-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.gameover-button img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Simplifying button icon filters to show original colors */
+.gameover-button.restart img,
+.gameover-button.menu img {
+    filter: none;
+}
+
+@media (max-width: 600px) {
+    #gameOverScreen .game-logo {
+        width: clamp(150px, 50%, 300px);
+        margin-bottom: 15px;
+    }
+
+    .gameover-panel {
+        width: clamp(250px, 95%, 400px);
+        padding: 15px;
+    }
+
+    .gameover-header h1 {
+        font-size: 2em;
+    }
+
+    .gameover-row {
+        padding: 10px 15px;
+    }
+
+    .gameover-button {
+        width: 50px;
+        height: 50px;
+    }
+
+    .gameover-button img {
+        width: 25px;
+        height: 25px;
+    }
+}
+
+@media (max-width: 400px) {
+    #gameOverScreen .game-logo {
+        width: clamp(120px, 60%, 200px);
+        margin-bottom: 10px;
+    }
+
+    .gameover-panel {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .gameover-header h1 {
+        font-size: 1.8em;
+    }
+
+    .gameover-row {
+        padding: 8px 12px;
+    }
+
+    .gameover-button {
+        width: 45px;
+        height: 45px;
+    }
+
+    .gameover-button img {
+        width: 22px;
+        height: 22px;
+    }
+} 

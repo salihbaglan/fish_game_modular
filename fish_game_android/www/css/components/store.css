@@ -1,0 +1,157 @@
+.upgrade-item {
+    background: linear-gradient(135deg, rgba(0, 64, 128, 0.2), rgba(0, 89, 179, 0.1));
+    border: 2px solid rgba(135, 206, 235, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.upgrade-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.upgrade-icon {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.upgrade-info h3 {
+    color: #FFD700;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.upgrade-description {
+    color: #87CEEB;
+    font-size: 14px;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.upgrade-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.level-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.level-display {
+    color: #FFD700;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+}
+
+.level-slider {
+    width: 100%;
+}
+
+.slider-track {
+    position: relative;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: visible;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slider-progress, .magnet-progress, .shield-progress, #magnetSliderProgress, #shieldSliderProgress {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    position: relative;
+    z-index: 2;
+    min-width: 2px;
+    box-shadow: 0 0 4px rgba(76, 175, 80, 0.5);
+}
+
+.slider-dots {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(0, 0, 0, 0.6);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 3;
+}
+
+.dot.active {
+    background: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 3px rgba(0, 0, 0, 0.5);
+    transform: scale(1.2);
+}
+
+.btn-upgrade {
+    padding: 12px 20px;
+    font-size: 16px;
+    background: linear-gradient(145deg, #28a745, #20c997);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-upgrade:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.btn-upgrade:disabled {
+    background: linear-gradient(145deg, #6c757d, #5a6268);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.currency-inline {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-upgrade:hover {
+    background: linear-gradient(145deg, #0056b3, #007bff);
+}
+
+.currency-inline {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+} 

@@ -1,0 +1,39 @@
+.game-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    z-index: 1000;
+    transition: background var(--transition-duration, 1s) ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-overlay.inactive {
+    background: rgba(0, 0, 0, 0.7);
+    pointer-events: auto;
+}
+
+.game-overlay .message {
+    position: relative;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    opacity: 0;
+    transition: all var(--transition-duration, 1s) ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transform: translateY(20px);
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+}
+
+.game-overlay.inactive .message {
+    opacity: 1;
+    transform: translateY(0);
+} 
