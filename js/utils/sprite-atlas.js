@@ -8,17 +8,17 @@ export class EnemyAtlas {
         this.atlasSize = 512; // Atlas'ın toplam boyutu
         this.frameUpdateInterval = 100; // Her kare arası ms cinsinden süre
         this.lastFrameUpdate = 0;
-        
+
         // Grid pozisyonları (sadece dolu kareler)
         this.validFrames = [
-            {x: 0, y: 0}, // 1. kare
-            {x: 1, y: 0}, // 2. kare
-            {x: 2, y: 0}, // 3. kare
-            {x: 3, y: 0}, // 4. kare
-            {x: 0, y: 1}, // 5. kare
-            {x: 1, y: 1}, // 6. kare
-            {x: 2, y: 1}, // 7. kare
-            {x: 3, y: 1}  // 8. kare
+            { x: 0, y: 0 }, // 1. kare
+            { x: 1, y: 0 }, // 2. kare
+            { x: 2, y: 0 }, // 3. kare
+            { x: 3, y: 0 }, // 4. kare
+            { x: 0, y: 1 }, // 5. kare
+            { x: 1, y: 1 }, // 6. kare
+            { x: 2, y: 1 }, // 7. kare
+            { x: 3, y: 1 }  // 8. kare
         ];
     }
 
@@ -30,8 +30,8 @@ export class EnemyAtlas {
         for (let level = 1; level <= totalImages; level++) {
             const img = new Image();
             const levelStr = level.toString().padStart(3, '0');
-            img.src = `assets/images/ObjectAnimSheet/Enemy/${levelStr}.png`;
-            
+            img.src = `assets/images/ObjectAnimSheet/Enemy/${levelStr}.webp`;
+
             img.onload = () => {
                 loadedCount++;
                 if (loadedCount === totalImages && callback) {
@@ -78,7 +78,7 @@ export class EnemyAtlas {
 
         ctx.save();
         ctx.translate(x, y);
-        
+
         // Yön için çevirme
         if (direction < 0) {
             ctx.scale(-1, 1);
@@ -113,17 +113,17 @@ export default class SpriteAtlas {
         this.atlasSize = 512; // Atlas'ın toplam boyutu
         this.frameUpdateInterval = 100; // Her kare arası ms cinsinden süre
         this.lastFrameUpdate = 0;
-        
+
         // Grid pozisyonları (sadece dolu kareler)
         this.validFrames = [
-            {x: 0, y: 0}, // 1. kare
-            {x: 1, y: 0}, // 2. kare
-            {x: 2, y: 0}, // 3. kare
-            {x: 3, y: 0}, // 4. kare
-            {x: 0, y: 1}, // 5. kare
-            {x: 1, y: 1}, // 6. kare
-            {x: 2, y: 1}, // 7. kare
-            {x: 3, y: 1}  // 8. kare
+            { x: 0, y: 0 }, // 1. kare
+            { x: 1, y: 0 }, // 2. kare
+            { x: 2, y: 0 }, // 3. kare
+            { x: 3, y: 0 }, // 4. kare
+            { x: 0, y: 1 }, // 5. kare
+            { x: 1, y: 1 }, // 6. kare
+            { x: 2, y: 1 }, // 7. kare
+            { x: 3, y: 1 }  // 8. kare
         ];
     }
 
@@ -135,8 +135,8 @@ export default class SpriteAtlas {
         for (let level = 1; level <= totalImages; level++) {
             const img = new Image();
             const levelStr = level.toString().padStart(3, '0');
-            img.src = `assets/images/ObjectAnimSheet/Player/${levelStr}.png`;
-            
+            img.src = `assets/images/ObjectAnimSheet/Player/${levelStr}.webp`;
+
             img.onload = () => {
                 loadedCount++;
                 if (loadedCount === totalImages && callback) {
@@ -183,7 +183,7 @@ export default class SpriteAtlas {
 
         ctx.save();
         ctx.translate(x, y);
-        
+
         // Yön için çevirme
         if (direction < 0) {
             ctx.scale(-1, 1);

@@ -21,34 +21,34 @@ class GameApp {
         // Canvas ve oyun container
         this.canvas = document.getElementById('gameCanvas');
         this.gameContainer = document.querySelector('.game-container');
-        
+
         // Modülleri başlat
         this.renderer = new Renderer(this.canvas);
         this.effects = new Effects(this.gameContainer);
         this.inputHandler = new InputHandler(this.canvas);
         this.ui = new UI();
-        
+
         // Oyun nesnesi
         this.game = new Game(this.canvas, this.effects, this.ui); // UI örneğini Game'e iletiyoruz
-        
+
         // Global referans (renderer için)
         window.game = this.game;
-        
+
         // High score yükle
         this.game.highScore = loadHighScore();
-        
+
         // Pencere boyutu değiştiğinde canvas'ı yeniden boyutlandır
         window.addEventListener('resize', () => this.renderer.resizeCanvas());
-        
+
         // İlk boyutlandırma
         this.renderer.resizeCanvas();
-        
+
         // UI'ı güncelle
         this.updateUI();
-        
+
         // İlk bubble'ları oluştur
         this.effects.createInitialBubbles(5);
-        
+
         // Butonlara event listener ekle
         this.setupEventListeners();
         this.setupInactivityDetection();
@@ -62,7 +62,7 @@ class GameApp {
             // Ancak translatePage() zaten çağrılıyor initLocalization içinde.
         });
     }
-    
+
     // Event listener'ları ayarla
     setupEventListeners() {
         document.getElementById('startButton').addEventListener('click', () => this.startGame());
@@ -110,14 +110,14 @@ class GameApp {
         // Oyun hızını yavaşça azalt
         const slowdownDuration = 1000;
         const startTime = Date.now();
-        
+
         const animate = () => {
             if (gameState !== 'playing') return;
 
             const currentTime = Date.now();
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / slowdownDuration, 1);
-            
+
             gameSpeed = 1 - (progress * (1 - GAME_SPEED_WHEN_INACTIVE));
 
             if (progress < 1 && this.isGamePaused) {
@@ -138,14 +138,14 @@ class GameApp {
         // Oyun hızını yavaşça normale döndür
         const speedupDuration = 500;
         const startTime = Date.now();
-        
+
         const animate = () => {
             if (gameState !== 'playing') return;
 
             const currentTime = Date.now();
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / speedupDuration, 1);
-            
+
             gameSpeed = GAME_SPEED_WHEN_INACTIVE + (progress * (1 - GAME_SPEED_WHEN_INACTIVE));
 
             if (progress < 1 && !this.isGamePaused) {
@@ -157,7 +157,7 @@ class GameApp {
 
         animate();
     }
-    
+
     // UI güncelleme
     updateUI() {
         const gameState = this.game.getGameState();
@@ -181,14 +181,15 @@ class GameApp {
         // Sadece kalkan bar'ı için olan çağrı kalabilir.
         // this.ui.updateShieldBar(gameState.shieldEffect); // Bu satır updateUI içine taşındı.
     }
-    
+
     // Oyun başlatma
     startGame() {
+        console.log('Game started');
         gameState = 'playing';
         this.lastInteractionTime = Date.now();
         this.isGamePaused = false;
         gameSpeed = 1;
-        
+
         this.ui.showStartScreen(false);
         // Oyun başladığında üstteki paneli göster
         const uiPanel = document.querySelector('.ui');
@@ -196,15 +197,17 @@ class GameApp {
         this.game.startGame();
         this.gameLoop();
     }
-    
+
     // Oyunu yeniden başlatma
     restartGame() {
+        console.log('Main menu / Restart');
         this.ui.showGameOverScreen(false);
         this.startGame();
     }
-    
+
     // Oyun bitişi
     gameOver() {
+        console.log('Game over');
         const result = this.game.gameOver();
         saveGameData(result.highScore);
         const isNewHighScore = result.score >= result.highScore;
@@ -216,7 +219,7 @@ class GameApp {
 
         this.ui.showGameOverScreen(true, result.score, result.level, this.game.sessionEatenFish, this.game.gameTimer, isNewHighScore);
     }
-    
+
     // Ana oyun döngüsü
     gameLoop() {
         if (!this.lastFrameTime) {
@@ -229,7 +232,7 @@ class GameApp {
         if (gameState === 'playing') {
             const mousePosition = this.inputHandler.getMousePosition();
             this.game.update(mousePosition, this.deltaTime);
-            
+
             const gameState = this.game.getGameState();
 
             this.renderer.drawGame(
@@ -240,9 +243,9 @@ class GameApp {
                 mousePosition.x,
                 gameState.gameState
             );
-            
+
             this.updateUI();
-            
+
             if (gameState.gameState === 'playing') {
                 requestAnimationFrame(() => this.gameLoop());
             } else if (gameState.gameState === 'gameOver') {
@@ -254,6 +257,7 @@ class GameApp {
 
 // Sayfa yüklendiğinde oyunu başlat
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Game loaded');
     const app = new GameApp();
     app.gameLoop();
 });

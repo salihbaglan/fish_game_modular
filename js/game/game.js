@@ -10,7 +10,7 @@ export default class Game {
         this.effects = effects;
         this.ui = ui; // ui referansını saklıyoruz
         this.fishAssets = new FishAssets();
-        
+
         // Zaman yavaşlatma sistemi
         this.timeScale = 1;
         this.isSlowMotionActive = false;
@@ -18,38 +18,38 @@ export default class Game {
         this.slowMotionDelay = 180; // 3 saniye (60 FPS)
         this.slowMotionScale = 0.2; // %20 hız
         this.isTouching = false; // Dokunma durumu için yeni değişken
-        
+
         // XP bar takibi için
         this.xpBarPosition = { x: 0, y: 0 };
         this.lastFrameTime = 0;
-        
+
         // Mouse/touch pozisyonu için yeni değişkenler
         this.lastMousePosition = { x: 0, y: 0 };
         this.isMouseDown = false;
-        
+
         // resumeGame fonksiyonunu bağla
         this.resumeGame = this.resumeGame.bind(this);
         this.handleTouchStart = this.handleTouchStart.bind(this);
         this.handleTouchEnd = this.handleTouchEnd.bind(this);
         this.updateXPBarPosition = this.updateXPBarPosition.bind(this);
-        
+
         // Event listener'ları güncelle
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleTouchMove = this.handleTouchMove.bind(this);
-        
+
         // Dokunma olaylarını dinle
         document.addEventListener('touchstart', this.handleTouchStart);
         document.addEventListener('touchend', this.handleTouchEnd);
         document.addEventListener('mousedown', this.handleTouchStart);
         document.addEventListener('mouseup', this.handleTouchEnd);
-        
+
         // Mouse/touch event listener'ları ekle
         document.addEventListener('mousemove', this.handleMouseMove);
         document.addEventListener('touchmove', this.handleTouchMove);
-        
+
         // XP bar animasyonunu başlat
         requestAnimationFrame(this.updateXPBarPosition);
-        
+
         // Oyun durumu
         this.gameState = 'start';
         this.score = 0;
@@ -60,7 +60,7 @@ export default class Game {
         this.cameraZoom = 1;
         this.fishCurrency = 0; // Yenen balık sayısı (para birimi)
         this.sessionEatenFish = 0; // Bu oturumda yenen balık sayısı
-        
+
         // Yeni Dinamik Senaryo Sistemi
         this.gameTimer = 0; // Saniye cinsinden oyun süresi
         this.currentPhase = 'calm'; // calm, intense, chaos, bonus
@@ -71,7 +71,7 @@ export default class Game {
         this.gameRhythm = 0; // Oyun ritmi (0-100)
         this.stressLevel = 0; // Stres seviyesi (0-100)
         this.relaxationBonus = 0; // Rahatlama bonusu
-        
+
         // Oyun nesneleri
         this.player = this.createPlayer();
         this.enemies = [];
@@ -84,21 +84,21 @@ export default class Game {
         this.magnets = [];
         this.garbageClouds = [];
         this.shields = [];
-        
+
         // Mıknatıs efekti
         this.magnetEffect = {
             active: false,
             duration: 0,
             maxDuration: 1800 // 30 saniye (60 FPS * 30)
         };
-        
+
         // Kalkan efekti
         this.shieldEffect = {
             active: false,
             duration: 0,
             maxDuration: 1800 // 30 saniye (60 FPS * 30)
         };
-        
+
         // Deniz anası efektleri
         this.playerSlowEffect = {
             active: false,
@@ -106,13 +106,9 @@ export default class Game {
             originalSpeed: 0
         };
     }
-    
+
     // Oyuncu balığı oluşturma
     createPlayer() {
-        console.log('Creating player with canvas dimensions:', {
-            width: this.canvas.width,
-            height: this.canvas.height
-        });
 
         const player = {
             x: this.canvas.width / 2,
@@ -126,15 +122,10 @@ export default class Game {
             rotation: 0,
             isAnimating: true // Animasyon durumu
         };
-        
-        console.log('Created player with state:', {
-            ...player,
-            canvasContext: this.canvas.getContext('2d') ? 'available' : 'not available'
-        });
-        
+
         return player;
     }
-    
+
     // Düşman balık oluşturma - Ekran dışından spawn
     createEnemyFish() {
         // Zoom seviyesine göre spawn mesafesini ayarla
@@ -187,7 +178,7 @@ export default class Game {
 
         this.enemies.push(fish);
     }
-    
+
     // Deniz anası oluşturma - Ekran dışından spawn
     createJellyfish() {
         // Zoom seviyesine göre spawn mesafesini ayarla
@@ -228,7 +219,7 @@ export default class Game {
 
         this.enemies.push(jellyfish);
     }
-    
+
     // Bomba uyarı oluşturma - Canvas içinde
     createBombWarning() {
         const warningX = Math.random() * (this.canvas.width - 100) + 50;
@@ -274,7 +265,7 @@ export default class Game {
 
         this.bombs.push(bomb);
     }
-    
+
     // Kanca oluşturma - Canvas içinde
     createHook() {
         const hook = {
@@ -297,7 +288,7 @@ export default class Game {
 
         this.hooks.push(hook);
     }
-    
+
     // Mıknatıs oluşturma - Canvas içinde
     createMagnet() {
         const magnet = {
@@ -331,13 +322,13 @@ export default class Game {
             visible: true, // Hemen görünür
             dangerRadius: 80 // Tehlike alanı
         };
-        
+
         // Bulut içinde 8-12 çöp parçası oluştur
         const itemCount = 8 + Math.floor(Math.random() * 5);
         for (let i = 0; i < itemCount; i++) {
             const angle = (Math.PI * 2 * i) / itemCount + Math.random() * 0.5;
             const distance = 20 + Math.random() * 40;
-            
+
             cloud.garbageItems.push({
                 type: Math.floor(Math.random() * 6) + 1, // 1-6 arası çöp tipi
                 offsetX: Math.cos(angle) * distance,
@@ -349,10 +340,10 @@ export default class Game {
                 size: 20 + Math.random() * 10 // Çöp boyutu (2 tık daha büyük)
             });
         }
-        
+
         this.garbageClouds.push(cloud);
     }
-    
+
     // Kalkan oluşturma
     createShield() {
         const shield = {
@@ -365,17 +356,17 @@ export default class Game {
             glowPhase: Math.random() * Math.PI * 2,
             collected: false
         };
-        
+
         this.shields.push(shield);
     }
-    
+
     // Balığı kancaya takma
     hookFish(fish, hook) {
         // Balığın ağzını kancaya hizalama
         const mouthToHookX = hook.x - fish.x;
         const mouthToHookY = hook.y - fish.y;
         const angle = Math.atan2(mouthToHookY, mouthToHookX);
-        
+
         const hookedFish = {
             fish: fish,
             hook: hook,
@@ -387,24 +378,24 @@ export default class Game {
             targetRotation: angle - Math.PI, // Ağız kancaya bakacak şekilde
             currentRotation: fish.rotation || 0
         };
-        
+
         // Balığı işaretle
         fish.direction = 0; // Hareket durduruluyor
         fish.isHooked = true; // Takılmış olarak işaretle
-        
+
         this.hookedFish.push(hookedFish);
-        
+
         // Balığı düşman listesinden ÇIKARMA - sadece işaretle
         // Bu sayede balık görünmeye devam eder
     }
-    
+
     // Player'ı kancaya takma
     hookPlayer(hook) {
         // Player'ın ağzını kancaya hizalama
         const mouthToHookX = hook.x - this.player.x;
         const mouthToHookY = hook.y - this.player.y;
         const angle = Math.atan2(mouthToHookY, mouthToHookX);
-        
+
         const hookedPlayer = {
             player: this.player,
             hook: hook,
@@ -416,16 +407,16 @@ export default class Game {
             targetRotation: angle - Math.PI, // Ağız kancaya bakacak şekilde
             currentRotation: this.player.rotation || 0
         };
-        
+
         // Player'ı işaretle
         this.player.isHooked = true;
-        
+
         this.hookedFish.push(hookedPlayer);
-        
+
         // Kancayı hemen yukarı çekmeye başlat
         hook.state = 'ascending';
     }
-    
+
     // Kanca-balık etkileşimi kontrolü
     checkHookFishInteraction(hook) {
         // Player kanca kontrolü
@@ -433,11 +424,11 @@ export default class Game {
             Math.pow(this.player.x - hook.x, 2) +
             Math.pow(this.player.y - hook.y, 2)
         );
-        
+
         if (playerDistance < 35) {
             // Player kancaya takıldı - player'ı da kancaya tak
             this.hookPlayer(hook);
-            
+
             // Takılma efekti
             const splashParticles = this.effects.createParticles(
                 hook.x,
@@ -449,28 +440,28 @@ export default class Game {
             this.particles.push(...splashParticles);
             return;
         }
-        
+
         // Düşman balık kontrolü
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const fish = this.enemies[i];
-            
+
             // Deniz anası kancaya takılmaz
             if (fish.type === 'jellyfish') continue;
-            
+
             // Zaten takılmış balık kontrolü
             if (fish.isHooked) continue;
-            
+
             // Mesafe kontrolü - kanca başına çarpma
             const distance = Math.sqrt(
                 Math.pow(fish.x - hook.x, 2) +
                 Math.pow(fish.y - hook.y, 2)
             );
-            
+
             // Kanca başına çarptı mı? (daha büyük menzil)
             if (distance < 35) {
                 // Direkt yakalama - kim çarparsa çarpsın
                 this.hookFish(fish, hook);
-                
+
                 // Takılma efekti
                 const splashParticles = this.effects.createParticles(
                     hook.x,
@@ -480,102 +471,102 @@ export default class Game {
                     4
                 );
                 this.particles.push(...splashParticles);
-                
+
                 break; // Bir balık takıldı, döngüyü kır
             }
         }
     }
-    
+
     // Balık kanca kaçınma AI'sı
     applyHookAvoidance(fish) {
         for (const hook of this.hooks) {
             if (hook.state !== 'fishing') continue;
-            
+
             const distance = Math.sqrt(
                 Math.pow(fish.x - hook.x, 2) +
                 Math.pow(fish.y - hook.y, 2)
             );
-            
+
             // Kanca tehlike alanında mı? (100px)
             if (distance < 100) {
                 // Kancadan kaçınma kuvveti
                 const avoidanceStrength = (100 - distance) / 100;
                 const avoidanceForce = avoidanceStrength * 2;
-                
+
                 // Kancadan uzaklaşma yönü
                 const avoidX = (fish.x - hook.x) / distance;
                 const avoidY = (fish.y - hook.y) / distance;
-                
+
                 // Balığın hareketini etkileme
                 fish.x += avoidX * avoidanceForce;
                 fish.y += avoidY * avoidanceForce;
-                
+
                 // Ekran sınırları kontrolü
                 fish.x = Math.max(50, Math.min(this.canvas.width - 50, fish.x));
                 fish.y = Math.max(50, Math.min(this.canvas.height - 50, fish.y));
             }
         }
     }
-    
+
     // Mıknatıs efekti uygulama
     applyMagnetEffect() {
         const magnetRange = 150; // Mıknatıs menzili
-        
+
         for (const enemy of this.enemies) {
             // Deniz anası mıknatıstan etkilenmez
             if (enemy.type === 'jellyfish') continue;
-            
+
             // Takılmış balıklar etkilenmez
             if (enemy.isHooked) continue;
-            
+
             // Player yiyebilir mi kontrolü
             if (!enemy.canEat) continue;
-            
+
             const distance = Math.sqrt(
                 Math.pow(enemy.x - this.player.x, 2) +
                 Math.pow(enemy.y - this.player.y, 2)
             );
-            
+
             // Mıknatıs menzilinde mi?
             if (distance < magnetRange && distance > 0) {
                 // Player'a doğru çekme kuvveti (artırıldı)
                 const pullStrength = (magnetRange - distance) / magnetRange * 6;
                 const pullX = (this.player.x - enemy.x) / distance;
                 const pullY = (this.player.y - enemy.y) / distance;
-                
+
                 // Balığı player'a doğru çek
                 enemy.x += pullX * pullStrength;
                 enemy.y += pullY * pullStrength;
             }
         }
     }
-    
+
     // Bomba patlama
     explodeBomb(bomb, index) {
         const explosionRadius = 120; // Patlama çapı
-        
+
         // Patlama çapındaki tüm balıkları kontrol et
         this.checkExplosionDamage(bomb.x, bomb.y, explosionRadius);
-        
+
         // Gelişmiş patlama efektleri
         const explosionParticles = this.effects.createExplosionEffect(bomb.x, bomb.y);
         this.particles.push(...explosionParticles);
-        
+
         // Su patlama efekti
         const waterParticles = this.effects.createWaterExplosionEffect(bomb.x, bomb.y, explosionRadius);
         this.particles.push(...waterParticles);
-        
-        // Baloncuk efekti (Buble.png ile)
+
+        // Baloncuk efekti (Buble.webp ile)
         const bubbleParticles = this.effects.createBubbleExplosionEffect(bomb.x, bomb.y);
         this.particles.push(...bubbleParticles);
-        
+
         // Ekran sallama efekti
         this.effects.createScreenShake(15, 400);
-        
+
         // Bombayı kaldır
         this.bombs.splice(index, 1);
     }
-    
+
     // Patlama hasarı kontrolü
     checkExplosionDamage(explosionX, explosionY, radius) {
         // Oyuncu kontrolü
@@ -583,12 +574,12 @@ export default class Game {
             Math.pow(this.player.x - explosionX, 2) +
             Math.pow(this.player.y - explosionY, 2)
         );
-        
+
         if (playerDistance <= radius) {
             this.gameOver();
             return;
         }
-        
+
         // Düşman balıkları kontrolü
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const enemy = this.enemies[i];
@@ -596,7 +587,7 @@ export default class Game {
                 Math.pow(enemy.x - explosionX, 2) +
                 Math.pow(enemy.y - explosionY, 2)
             );
-            
+
             if (enemyDistance <= radius) {
                 // Düşman balığı öldür
                 const deathParticles = this.effects.createParticles(
@@ -607,41 +598,41 @@ export default class Game {
                     6
                 );
                 this.particles.push(...deathParticles);
-                
+
                 this.enemies.splice(i, 1);
             }
         }
     }
-    
+
     // XP ekleme ve seviye kontrolü
     addXP(amount) {
         this.currentXP += amount;
         this.score += amount;
-        
+
         if (this.currentXP >= this.xpToNextLevel) {
             this.currentXP -= this.xpToNextLevel;
             this.playerLevel++;
-            
+
             // Oyuncu büyüme
             this.player.baseSize += 5;
             this.player.size = this.player.baseSize;
-            
+
             // Oyuncu seviyesini güncelle (atlas için)
             this.player.level = this.playerLevel;
-            
+
             // Yeni seviye için gerekli XP
             this.xpToNextLevel = calculateXPRequired(this.playerLevel);
-            
+
             // Kamera zoom ayarı (her 5 seviyede bir zoom out)
             if (this.playerLevel % CONFIG.ZOOM_LEVEL_INTERVAL === 0) {
                 this.cameraZoom = Math.max(CONFIG.MIN_ZOOM, this.cameraZoom - CONFIG.ZOOM_DECREMENT);
             }
-            
+
             // Floating level göstergesini güncelle
             const floatingLevel = document.getElementById('floatingLevel');
             if (floatingLevel) {
                 floatingLevel.textContent = this.playerLevel;
-                
+
                 // Level up animasyonu
                 floatingLevel.style.transform = 'scale(1.5)';
                 floatingLevel.style.transition = 'transform 0.2s ease';
@@ -649,11 +640,11 @@ export default class Game {
                     floatingLevel.style.transform = 'scale(1)';
                 }, 200);
             }
-            
+
             this.effects.showLevelUpPopup(this.playerLevel);
         }
     }
-    
+
     // Oyun güncelleme
     update(mousePosition, deltaTime) {
         if (this.gameState !== 'playing') {
@@ -667,7 +658,7 @@ export default class Game {
             if (this.slowMotionTimer >= this.slowMotionDelay) {
                 this.isSlowMotionActive = true;
                 this.timeScale = this.slowMotionScale;
-                
+
                 if (this.ui && typeof this.ui.showMessage === 'function') {
                     this.ui.showMessage('Devam etmek için dokun', 'info', 0, this.timeScale);
                 }
@@ -691,12 +682,12 @@ export default class Game {
             const dy = (this.lastMousePosition.y + TOUCH_OFFSET_Y) - this.player.y;
             const baseSpeed = 0.1;
             const currentSpeed = this.playerSlowEffect.active ? baseSpeed * 0.3 : baseSpeed;
-            
+
             // Hareket yönüne göre direction değerini ayarla
             if (Math.abs(dx) > 0.1) { // Küçük hareketleri görmezden gel
                 this.player.direction = dx > 0 ? 1 : -1; // Sağa gidiyorsa sağa bak, sola gidiyorsa sola bak
             }
-            
+
             this.player.x += dx * currentSpeed;
             this.player.y += dy * currentSpeed;
 
@@ -711,20 +702,20 @@ export default class Game {
         // Düşman balıkların güncellenmesi
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const enemy = this.enemies[i];
-            
+
             if (!enemy.isHooked) {  // Kancaya takılı değilse hareket edebilir
                 enemy.x += enemy.speed * enemy.direction * this.timeScale;
-                
+
                 if (enemy.type === 'jellyfish') {
                     enemy.pulsePhase += 0.05 * this.timeScale;
                 }
-                
+
                 // Düşman balık boyutunu sabit tut
                 enemy.size = enemy.baseSize;
             }
 
             // Ekrandan çıkan balıkları temizle
-            if ((enemy.direction > 0 && enemy.x > this.canvas.width + 100) || 
+            if ((enemy.direction > 0 && enemy.x > this.canvas.width + 100) ||
                 (enemy.direction < 0 && enemy.x < -100)) {
                 this.enemies.splice(i, 1);
             }
@@ -734,7 +725,7 @@ export default class Game {
         for (let i = this.bombs.length - 1; i >= 0; i--) {
             const bomb = this.bombs[i];
             bomb.glowPhase += 0.08 * this.timeScale;
-            
+
             if (bomb.state === 'falling') {
                 bomb.y += bomb.speed * this.timeScale;
                 bomb.rotation += bomb.rotationSpeed * this.timeScale;
@@ -749,7 +740,7 @@ export default class Game {
             const hook = this.hooks[i];
             hook.swayPhase += 0.05 * this.timeScale;
             hook.wormPhase += 0.15 * this.timeScale;
-            
+
             if (hook.state === 'descending') {
                 hook.y += hook.speed * this.timeScale;
                 hook.x += Math.sin(hook.swayPhase) * 0.5 * this.timeScale;
@@ -768,11 +759,11 @@ export default class Game {
             hookedFish.strugglePhase += 0.2 * this.timeScale;
             const struggleX = Math.sin(hookedFish.strugglePhase) * hookedFish.struggleIntensity * 8;
             const struggleY = Math.cos(hookedFish.strugglePhase * 1.3) * hookedFish.struggleIntensity * 5;
-            
+
             // Rotasyon animasyonu
             const rotationDiff = hookedFish.targetRotation - hookedFish.currentRotation;
             hookedFish.currentRotation += rotationDiff * 0.1 * this.timeScale;
-            
+
             if (hookedFish.isPlayer) {
                 this.player.rotation = hookedFish.currentRotation;
                 const tailSwing = Math.sin(hookedFish.strugglePhase * 2) * hookedFish.struggleIntensity * 0.3;
@@ -794,11 +785,11 @@ export default class Game {
             const cloud = this.garbageClouds[i];
             cloud.age += this.timeScale;
             cloud.gasPhase += 0.05 * this.timeScale;
-            
+
             if (cloud.y < cloud.targetY) {
                 cloud.y += cloud.speed * this.timeScale;
             }
-            
+
             // Çöp parçalarını güncelle
             cloud.garbageItems.forEach(item => {
                 item.floatPhase += item.floatSpeed * this.timeScale;
@@ -829,7 +820,7 @@ export default class Game {
             const particle = this.particles[i];
             particle.x += particle.vx * this.timeScale;
             particle.y += particle.vy * this.timeScale;
-            
+
             if (particle.type === 'bubble') {
                 particle.life -= 0.008 * this.timeScale;
                 particle.rotation += particle.rotationSpeed * this.timeScale;
@@ -869,7 +860,7 @@ export default class Game {
         this.checkSurpriseEvents();
         this.checkCollisions();
     }
-    
+
     // Oyun başlatma
     startGame() {
         // Oyun durumunu sıfırla
@@ -881,12 +872,12 @@ export default class Game {
         this.cameraZoom = 1;
         this.fishCurrency = 0;
         this.sessionEatenFish = 0;
-        
+
         // Zaman yavaşlatma sistemini sıfırla
         this.timeScale = 1;
         this.isSlowMotionActive = false;
         this.slowMotionTimer = 0;
-        
+
         // Timer ve dalga sistemini sıfırla
         this.gameTimer = 0;
         this.currentWave = 1;
@@ -903,33 +894,33 @@ export default class Game {
         this.magnets = [];
         this.garbageClouds = [];
         this.shields = [];
-        
+
         // Mıknatıs efektini sıfırla
         this.magnetEffect = {
             active: false,
             duration: 0,
             maxDuration: 1800 // 30 saniye
         };
-        
+
         // Kalkan efektini sıfırla
         this.shieldEffect = {
             active: false,
             duration: 0,
             maxDuration: 1800 // 30 saniye
         };
-        
+
         // Player'ı yeniden oluştur ve kanca durumunu temizle
         this.player = this.createPlayer();
         this.player.isHooked = false;
         this.player.rotation = 0;
-        
+
         // Deniz anası efektlerini sıfırla
         this.playerSlowEffect = {
             active: false,
             duration: 0,
             originalSpeed: 0
         };
-        
+
         // Dokunma durumunu sıfırla
         this.isTouching = false;
 
@@ -940,27 +931,27 @@ export default class Game {
             floatingLevel.style.transform = 'scale(1)';
         }
     }
-    
+
     // Oyun bitişi
     gameOver() {
         this.gameState = 'gameOver';
-        
+
         // Oyun hızını normale döndür
         this.timeScale = 1;
         this.isSlowMotionActive = false;
         this.isTouching = false;
-        
+
         if (this.score > this.highScore) {
             this.highScore = this.score;
         }
-        
+
         return {
             score: this.score,
             level: this.playerLevel,
             highScore: this.highScore
         };
     }
-    
+
     // Oyun durumunu al
     getGameState() {
         return {
@@ -983,13 +974,13 @@ export default class Game {
             waveTimer: this.waveTimer
         };
     }
-    
+
     // Yeni dalga başlatma
     nextWave() {
         this.currentWave++;
         this.waveTimer = 0;
         this.difficultyMultiplier = 1 + (this.currentWave - 1) * 0.3; // Her dalga %30 daha zor
-        
+
         // Dalga geçiş efekti
         const waveParticles = this.effects.createParticles(
             this.canvas.width / 2,
@@ -999,10 +990,10 @@ export default class Game {
             10
         );
         this.particles.push(...waveParticles);
-        
-        console.log(`Dalga ${this.currentWave} başladı! Zorluk: ${this.difficultyMultiplier.toFixed(1)}x`);
+
+
     }
-    
+
     // Progresif spawn sistemi
     updateProgressiveSpawning() {
         const waveProgress = this.waveTimer / this.waveDuration; // 0-1 arası
@@ -1016,7 +1007,7 @@ export default class Game {
         // Dalga 1-2: Sadece küçük balıklar (kolay başlangıç)
         if (this.currentWave <= 2) {
             if (Math.random() < 0.015 * this.difficultyMultiplier) {
-                console.log('Spawning enemy fish - Wave:', this.currentWave);
+
                 this.createEnemyFish();
             }
             // Çok nadir mıknatıs
@@ -1082,7 +1073,7 @@ export default class Game {
             }
         }
     }
-    
+
     // Sürpriz olaylar
     checkSurpriseEvents() {
         if (this.gameTimer >= this.nextSurpriseEvent) {
@@ -1090,7 +1081,7 @@ export default class Game {
             this.nextSurpriseEvent = this.gameTimer + this.surpriseEventInterval;
         }
     }
-    
+
     // Sürpriz olay tetikleme
     triggerSurpriseEvent() {
         const events = [
@@ -1100,33 +1091,33 @@ export default class Game {
             'treasureTime',  // Hazine zamanı (çok mıknatıs/kalkan)
             'calmPeriod'     // Sakin dönem (hiç düşman yok)
         ];
-        
+
         const eventType = events[Math.floor(Math.random() * events.length)];
-        
-        switch(eventType) {
+
+        switch (eventType) {
             case 'fishRain':
-                console.log('Sürpriz: Balık Yağmuru!');
+
                 for (let i = 0; i < 8; i++) {
                     setTimeout(() => this.createEnemyFish(), i * 200);
                 }
                 break;
-                
+
             case 'magnetStorm':
-                console.log('Sürpriz: Mıknatıs Fırtınası!');
+
                 for (let i = 0; i < 2; i++) { // 5'ten 2'ye düşürüldü
                     setTimeout(() => this.createMagnet(), i * 800);
                 }
                 break;
-                
+
             case 'jellyfishSwarm':
-                console.log('Sürpriz: Deniz Anası Sürüsü!');
+
                 for (let i = 0; i < 3; i++) { // 4'ten 3'e düşürüldü
                     setTimeout(() => this.createJellyfish(), i * 600);
                 }
                 break;
-                
+
             case 'treasureTime':
-                console.log('Sürpriz: Hazine Zamanı!');
+
                 for (let i = 0; i < 1; i++) { // 3'ten 1'e düşürüldü
                     setTimeout(() => {
                         this.createMagnet();
@@ -1134,14 +1125,14 @@ export default class Game {
                     }, i * 1000);
                 }
                 break;
-                
+
             case 'calmPeriod':
-                console.log('Sürpriz: Sakin Dönem!');
+
                 // 5 saniye boyunca hiç düşman spawn etmeme
                 this.calmPeriodEnd = this.gameTimer + 300; // 5 saniye
                 break;
         }
-        
+
         // Sürpriz olay efekti
         const surpriseParticles = this.effects.createParticles(
             this.canvas.width / 2,
@@ -1152,7 +1143,7 @@ export default class Game {
         );
         this.particles.push(...surpriseParticles);
     }
-    
+
     // Timer formatı (MM:SS)
     getFormattedTime() {
         const totalSeconds = Math.floor(this.gameTimer / 60); // 60 FPS
@@ -1167,7 +1158,7 @@ export default class Game {
             this.isSlowMotionActive = false;
             this.timeScale = 1;
             this.slowMotionTimer = 0;
-            
+
             // Mesajı hemen gizle
             if (this.ui && typeof this.ui.hideMessage === 'function') {
                 this.ui.hideMessage();
@@ -1180,14 +1171,14 @@ export default class Game {
         // Bomba çarpışmaları
         for (let i = this.bombs.length - 1; i >= 0; i--) {
             const bomb = this.bombs[i];
-            
+
             if (checkCollision(this.player, bomb)) {
                 if (this.shieldEffect.active) continue;
                 this.explodeBomb(bomb, i);
                 this.gameOver();
                 return;
             }
-            
+
             // Yere çarpma kontrolü
             if (bomb.state === 'falling' && bomb.y >= this.canvas.height - 50) {
                 bomb.state = 'grounded';
@@ -1195,13 +1186,13 @@ export default class Game {
                 bomb.speed = 0;
                 bomb.rotationSpeed = 0;
             }
-            
+
             // Yerdeki bomba kontrolü
             if (bomb.state === 'grounded' && bomb.groundTimer >= bomb.maxGroundTime) {
                 this.explodeBomb(bomb, i);
             }
         }
-        
+
         // Çöp bulutu çarpışmaları
         for (let i = this.garbageClouds.length - 1; i >= 0; i--) {
             const cloud = this.garbageClouds[i];
@@ -1209,19 +1200,19 @@ export default class Game {
                 Math.pow(this.player.x - cloud.x, 2) +
                 Math.pow(this.player.y - cloud.y, 2)
             );
-            
+
             if (distance < cloud.size) {
                 if (this.shieldEffect.active) continue;
                 this.gameOver();
                 return;
             }
-            
+
             // Yaşam süresi kontrolü
             if (cloud.age > cloud.lifetime) {
                 this.garbageClouds.splice(i, 1);
             }
         }
-        
+
         // Mıknatıs toplama
         for (let i = this.magnets.length - 1; i >= 0; i--) {
             const magnet = this.magnets[i];
@@ -1229,12 +1220,12 @@ export default class Game {
                 Math.pow(this.player.x - magnet.x, 2) +
                 Math.pow(this.player.y - magnet.y, 2)
             );
-            
+
             if (distance < 40 && !magnet.collected) {
                 magnet.collected = true;
                 this.magnetEffect.active = true;
                 this.magnetEffect.duration = this.magnetEffect.maxDuration;
-                
+
                 const collectParticles = this.effects.createParticles(
                     magnet.x,
                     magnet.y,
@@ -1248,7 +1239,7 @@ export default class Game {
                 this.magnets.splice(i, 1);
             }
         }
-        
+
         // Kalkan toplama
         for (let i = this.shields.length - 1; i >= 0; i--) {
             const shield = this.shields[i];
@@ -1256,12 +1247,12 @@ export default class Game {
                 Math.pow(this.player.x - shield.x, 2) +
                 Math.pow(this.player.y - shield.y, 2)
             );
-            
+
             if (distance < 40 && !shield.collected) {
                 shield.collected = true;
                 this.shieldEffect.active = true;
                 this.shieldEffect.duration = this.shieldEffect.maxDuration;
-                
+
                 const collectParticles = this.effects.createParticles(
                     shield.x,
                     shield.y,
@@ -1275,20 +1266,20 @@ export default class Game {
                 this.shields.splice(i, 1);
             }
         }
-        
+
         // Düşman balık çarpışmaları
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const enemy = this.enemies[i];
-            
+
             if (checkCollision(this.player, enemy)) {
                 if (enemy.type === 'jellyfish') {
                     if (this.shieldEffect.active) continue;
-                    
+
                     if (!this.playerSlowEffect.active) {
                         this.playerSlowEffect.active = true;
                         this.playerSlowEffect.duration = 300;
                     }
-                    
+
                     const newParticles = this.effects.createParticles(
                         enemy.x,
                         enemy.y,
@@ -1298,13 +1289,13 @@ export default class Game {
                     );
                     this.particles.push(...newParticles);
                     this.enemies.splice(i, 1);
-                    
+
                 } else if (enemy.canEat) {
                     this.addXP(enemy.xpValue);
                     this.fishCurrency += 1;
                     this.ui.addFishCurrency(1);
                     this.sessionEatenFish += 1;
-                    
+
                     const newParticles = this.effects.createParticles(
                         enemy.x,
                         enemy.y,
@@ -1315,7 +1306,7 @@ export default class Game {
                     this.particles.push(...newParticles);
                     this.effects.showXPPopup(enemy.x, enemy.y, enemy.xpValue);
                     this.enemies.splice(i, 1);
-                    
+
                 } else {
                     if (this.shieldEffect.active) continue;
                     this.gameOver();
@@ -1323,17 +1314,17 @@ export default class Game {
                 }
             }
         }
-        
+
         // Kanca-balık etkileşimleri
         for (const hook of this.hooks) {
             if (hook.state !== 'fishing') continue;
-            
+
             // Player kanca kontrolü
             const playerDistance = Math.sqrt(
                 Math.pow(this.player.x - hook.x, 2) +
                 Math.pow(this.player.y - hook.y, 2)
             );
-            
+
             if (playerDistance < 35 && !this.player.isHooked) {
                 this.hookPlayer(hook);
                 const splashParticles = this.effects.createParticles(
@@ -1346,16 +1337,16 @@ export default class Game {
                 this.particles.push(...splashParticles);
                 continue;
             }
-            
+
             // Düşman balık kontrolü
             for (const enemy of this.enemies) {
                 if (enemy.type === 'jellyfish' || enemy.isHooked) continue;
-                
+
                 const distance = Math.sqrt(
                     Math.pow(enemy.x - hook.x, 2) +
                     Math.pow(enemy.y - hook.y, 2)
                 );
-                
+
                 if (distance < 35) {
                     this.hookFish(enemy, hook);
                     const splashParticles = this.effects.createParticles(
@@ -1370,12 +1361,12 @@ export default class Game {
                 }
             }
         }
-        
+
         // Takılı balıkların ekrandan çıkma kontrolü
         for (let i = this.hookedFish.length - 1; i >= 0; i--) {
             const hookedFish = this.hookedFish[i];
             const hook = hookedFish.hook;
-            
+
             // Kanca kaldırıldıysa veya ekrandan çıktıysa
             if (!this.hooks.includes(hook) || hook.y < -100) {
                 if (hookedFish.isPlayer) {
@@ -1413,7 +1404,7 @@ export default class Game {
     handleTouchStart(event) {
         this.isTouching = true;
         this.isMouseDown = true;
-        
+
         // Mouse/touch pozisyonunu güncelle
         if (event.type === 'mousedown') {
             this.lastMousePosition.x = event.clientX;

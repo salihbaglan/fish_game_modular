@@ -25,7 +25,7 @@ export default class Effects {
     // Bomba patlama efekti
     createExplosionEffect(x, y) {
         const particles = [];
-        
+
         // Ana patlama parçacıkları (turuncu-kırmızı)
         for (let i = 0; i < 30; i++) {
             const angle = (i / 30) * Math.PI * 2;
@@ -40,7 +40,7 @@ export default class Effects {
                 size: 3 + Math.random() * 4
             });
         }
-        
+
         // İkinci dalga parçacıkları (sarı-beyaz)
         for (let i = 0; i < 20; i++) {
             const angle = Math.random() * Math.PI * 2;
@@ -55,7 +55,7 @@ export default class Effects {
                 size: 2 + Math.random() * 3
             });
         }
-        
+
         // Duman parçacıkları (gri)
         for (let i = 0; i < 15; i++) {
             const angle = Math.random() * Math.PI * 2;
@@ -70,20 +70,20 @@ export default class Effects {
                 size: 4 + Math.random() * 6
             });
         }
-        
+
         return particles;
     }
 
     // Su patlama efekti
     createWaterExplosionEffect(x, y, radius) {
         const particles = [];
-        
+
         // Su damlacıkları (mavi-beyaz)
         for (let i = 0; i < 25; i++) {
             const angle = Math.random() * Math.PI * 2;
             const distance = Math.random() * radius * 0.8;
             const speed = 3 + Math.random() * 6;
-            
+
             particles.push({
                 x: x + Math.cos(angle) * distance * 0.3,
                 y: y + Math.sin(angle) * distance * 0.3,
@@ -94,12 +94,12 @@ export default class Effects {
                 size: 2 + Math.random() * 4
             });
         }
-        
+
         // Su halkaları (şeffaf mavi)
         for (let i = 0; i < 15; i++) {
             const angle = (i / 15) * Math.PI * 2;
             const speed = 4 + Math.random() * 4;
-            
+
             particles.push({
                 x: x,
                 y: y,
@@ -110,12 +110,12 @@ export default class Effects {
                 size: 3 + Math.random() * 5
             });
         }
-        
+
         // Köpük efekti (beyaz)
         for (let i = 0; i < 20; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = 2 + Math.random() * 4;
-            
+
             particles.push({
                 x: x,
                 y: y,
@@ -126,22 +126,22 @@ export default class Effects {
                 size: 1 + Math.random() * 3
             });
         }
-        
+
         return particles;
     }
 
-    // Buble.png ile baloncuk efekti
+    // Buble.webp ile baloncuk efekti
     createBubbleExplosionEffect(x, y) {
         const bubbles = [];
-        
+
         // 8-12 baloncuk oluştur
         const bubbleCount = 8 + Math.floor(Math.random() * 5);
-        
+
         for (let i = 0; i < bubbleCount; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = 1 + Math.random() * 3;
             const size = 20 + Math.random() * 40; // 20-60px arası boyut (128x128'den küçültülmüş)
-            
+
             bubbles.push({
                 x: x + (Math.random() - 0.5) * 60, // Patlama merkezinden dağılım
                 y: y + (Math.random() - 0.5) * 40,
@@ -156,7 +156,7 @@ export default class Effects {
                 alpha: 0.7 + Math.random() * 0.3
             });
         }
-        
+
         return bubbles;
     }
 
@@ -164,29 +164,29 @@ export default class Effects {
     createScreenShake(intensity = 10, duration = 300) {
         const gameContainer = this.gameContainer;
         const originalTransform = gameContainer.style.transform || '';
-        
+
         let startTime = Date.now();
-        
+
         const shake = () => {
             const elapsed = Date.now() - startTime;
             const progress = elapsed / duration;
-            
+
             if (progress >= 1) {
                 // Sallama bitir
                 gameContainer.style.transform = originalTransform;
                 return;
             }
-            
+
             // Sallama şiddeti zamanla azalır
             const currentIntensity = intensity * (1 - progress);
             const offsetX = (Math.random() - 0.5) * currentIntensity;
             const offsetY = (Math.random() - 0.5) * currentIntensity;
-            
+
             gameContainer.style.transform = `${originalTransform} translate(${offsetX}px, ${offsetY}px)`;
-            
+
             requestAnimationFrame(shake);
         };
-        
+
         shake();
     }
 
@@ -200,9 +200,9 @@ export default class Effects {
         `;
         popup.style.left = x + 'px';
         popup.style.top = y + 'px';
-        
+
         this.gameContainer.appendChild(popup);
-        
+
         setTimeout(() => {
             popup.remove();
         }, 1500);
@@ -220,9 +220,9 @@ export default class Effects {
                 <div class="levelup-subtitle">Seviye Atladın!</div>
             </div>
         `;
-        
+
         this.gameContainer.appendChild(popup);
-        
+
         setTimeout(() => {
             popup.remove();
         }, 3000);
@@ -236,7 +236,7 @@ export default class Effects {
         popup.style.left = x + 'px';
         popup.style.top = y + 'px';
         this.gameContainer.appendChild(popup);
-        
+
         setTimeout(() => {
             popup.remove();
         }, 1000);
@@ -251,9 +251,9 @@ export default class Effects {
         bubble.style.height = size + 'px';
         bubble.style.left = Math.random() * window.innerWidth + 'px';
         bubble.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        
+
         this.bubblesContainer.appendChild(bubble);
-        
+
         setTimeout(() => {
             bubble.remove();
         }, 4000);
@@ -269,15 +269,15 @@ export default class Effects {
     // Balık nefes alma baloncukları oluştur
     createBreathingBubbles(fishX, fishY, fishSize, intensity = 1) {
         const bubbleCount = Math.floor(intensity * 3);
-        
+
         for (let i = 0; i < bubbleCount; i++) {
             const bubble = document.createElement('div');
             bubble.className = 'breathing-bubble';
-            
+
             // Balığın solungaç bölgesinden çıkacak şekilde konumlandır
             const offsetX = (Math.random() - 0.5) * fishSize * 0.3;
             const offsetY = (Math.random() - 0.5) * fishSize * 0.2;
-            
+
             bubble.style.left = (fishX - fishSize * 0.6 + offsetX) + 'px';
             bubble.style.top = (fishY + offsetY) + 'px';
             bubble.style.width = (2 + Math.random() * 4) + 'px';
@@ -287,9 +287,9 @@ export default class Effects {
             bubble.style.position = 'absolute';
             bubble.style.pointerEvents = 'none';
             bubble.style.animation = `breathingBubbleFloat ${1 + Math.random()}s ease-out forwards`;
-            
+
             this.bubblesContainer.appendChild(bubble);
-            
+
             // Baloncuğu otomatik olarak temizle
             setTimeout(() => {
                 if (bubble.parentNode) {
@@ -302,7 +302,7 @@ export default class Effects {
     // Balık hareket ederken su dalgaları efekti
     createWaterRipples(fishX, fishY, fishSize, speed) {
         if (speed < 2) return; // Yavaş hareket ediyorsa dalga oluşturma
-        
+
         const ripple = document.createElement('div');
         ripple.className = 'water-ripple';
         ripple.style.left = (fishX - fishSize) + 'px';
@@ -314,9 +314,9 @@ export default class Effects {
         ripple.style.position = 'absolute';
         ripple.style.pointerEvents = 'none';
         ripple.style.animation = 'waterRipple 0.8s ease-out forwards';
-        
+
         this.bubblesContainer.appendChild(ripple);
-        
+
         setTimeout(() => {
             if (ripple.parentNode) {
                 ripple.parentNode.removeChild(ripple);
@@ -342,7 +342,7 @@ export default class Effects {
             particle.x += particle.vx;
             particle.y += particle.vy;
             particle.life -= deltaTime * 2;
-            
+
             if (particle.life <= 0) {
                 particles.splice(i, 1);
             }

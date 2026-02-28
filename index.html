@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gelişmiş Balık Yeme Oyunu</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div class="game-container">
         <div class="bubbles" id="bubbles"></div>
-        
+
         <div class="ui" style="display:none;">
             <div class="ui-left ui-top-left">
                 <div class="ui-item">
-                    <img src="assets/images/score.png" alt="Score" class="ui-icon">
+                    <img src="assets/images/score.webp" alt="Score" class="ui-icon">
                     <span data-translate-key="scoreLabel">Skor</span>: <span id="score">0</span>
                 </div>
                 <div class="ui-item">
-                    <img src="assets/images/highscore.png" alt="High Score" class="ui-icon">
+                    <img src="assets/images/highscore.webp" alt="High Score" class="ui-icon">
                     <span data-translate-key="highScoreLabel">En Yüksek</span>: <span id="highScore">0</span>
                 </div>
                 <div class="ui-item">
-                    <img src="assets/images/fishing_dead.png" alt="Eaten Fish" class="ui-icon">
+                    <img src="assets/images/fishing_dead.webp" alt="Eaten Fish" class="ui-icon">
                     <span data-translate-key="eatenFishLabel">Yenen Balık</span>: <span id="eatenFishCount">0</span>
                 </div>
             </div>
             <div class="ui-right ui-top-right">
                 <div class="ui-item">
-                    <img src="assets/images/fishing_head.png" alt="Level" class="ui-icon">
+                    <img src="assets/images/fishing_head.webp" alt="Level" class="ui-icon">
                     <span data-translate-key="levelLabel">Seviye</span>: <span id="playerLevel">1</span>
                 </div>
                 <div class="ui-item">
-                    <img src="assets/images/UI/Time_Icon.png" alt="Timer" class="ui-icon">
+                    <img src="assets/images/UI/Time_Icon.webp" alt="Timer" class="ui-icon">
                     <span data-translate-key="timerLabel">Süre</span>: <span id="gameTimer">00:00</span>
                 </div>
             </div>
@@ -71,11 +73,11 @@
         </div>
 
         <div class="screen" id="startScreen">
-            <img src="assets/images/GameLogo.png" alt="Game Logo" class="game-logo">
-            
+            <img src="assets/images/GameLogo.webp" alt="Game Logo" class="game-logo">
+
             <div class="start-screen-top-bar">
                 <div class="total-fish-currency">
-                    <img src="assets/images/eating_fish.png" alt="Fish Currency" class="currency-icon">
+                    <img src="assets/images/eating_fish.webp" alt="Fish Currency" class="currency-icon">
                     <span id="totalFishCount">0</span>
                 </div>
             </div>
@@ -89,15 +91,15 @@
 
             <div class="start-screen-bottom-nav">
                 <button class="nav-btn" data-panel="shopPanel">
-                    <img src="assets/images/UI/Shop.png" alt="Shop">
+                    <img src="assets/images/UI/Shop.webp" alt="Shop">
                     <span data-translate-key="shopNavButton">Mağaza</span>
                 </button>
                 <button class="nav-btn" data-panel="settingsPanel">
-                    <img src="assets/images/UI/Settings.png" alt="Settings">
+                    <img src="assets/images/UI/Settings.webp" alt="Settings">
                     <span data-translate-key="settingsNavButton">Ayarlar</span>
                 </button>
                 <button class="nav-btn" data-panel="infoPanel">
-                    <img src="assets/images/UI/Info_Icon.png" alt="Info">
+                    <img src="assets/images/UI/Info_Icon.webp" alt="Info">
                     <span data-translate-key="infoNavButton">Bilgi</span>
                 </button>
             </div>
@@ -114,7 +116,9 @@
                         <span data-translate-key="upgradeMagnetLabel">Mıknatıs Süresi</span>
                         <div class="upgrade-controls">
                             <span id="magnetLevel"><span data-translate-key="levelAbbreviation">Sv.</span> 1</span>
-                            <button class="btn-upgrade" data-upgrade="magnet" data-cost="100"><span data-translate-key="upgradeButtonText">Yükselt</span> (100 <img src="assets/images/eating_fish.png" class="currency-inline">)</button>
+                            <button class="btn-upgrade" data-upgrade="magnet" data-cost="100"><span
+                                    data-translate-key="upgradeButtonText">Yükselt</span> (100 <img
+                                    src="assets/images/eating_fish.webp" class="currency-inline">)</button>
                         </div>
                     </div>
                     <!-- Kalkan Yükseltmesi -->
@@ -122,7 +126,9 @@
                         <span data-translate-key="upgradeShieldLabel">Kalkan Süresi</span>
                         <div class="upgrade-controls">
                             <span id="shieldLevel"><span data-translate-key="levelAbbreviation">Sv.</span> 1</span>
-                            <button class="btn-upgrade" data-upgrade="shield" data-cost="150"><span data-translate-key="upgradeButtonText">Yükselt</span> (150 <img src="assets/images/eating_fish.png" class="currency-inline">)</button>
+                            <button class="btn-upgrade" data-upgrade="shield" data-cost="150"><span
+                                    data-translate-key="upgradeButtonText">Yükselt</span> (150 <img
+                                    src="assets/images/eating_fish.webp" class="currency-inline">)</button>
                         </div>
                     </div>
                 </div>
@@ -167,33 +173,34 @@
                     <button class="close-panel-btn" data-panel="infoPanel">X</button>
                 </div>
                 <div class="panel-content">
-                    <p data-translate-key="developerInfo" data-translate-html="true">Bu oyun <strong>Salih Bağlan</strong> tarafından geliştirilmiştir.</p>
+                    <p data-translate-key="developerInfo" data-translate-html="true">Bu oyun <strong>Salih
+                            Bağlan</strong> tarafından geliştirilmiştir.</p>
                     <p data-translate-key="enjoyGame">Keyifli oyunlar!</p>
                 </div>
             </div>
         </div>
 
         <div class="screen" id="gameOverScreen" style="display: none;">
-            <img src="assets/images/GameLogo.png" alt="Game Over" class="game-logo">
+            <img src="assets/images/GameLogo.webp" alt="Game Over" class="game-logo">
             <div class="gameover-panel">
                 <div class="gameover-header">
                     <h1 data-translate-key="gameOverTitle">Game Over!</h1>
                 </div>
                 <div class="gameover-body">
                     <div class="gameover-row">
-                        <img src="assets/images/score.png" class="gameover-icon" alt="Score">
+                        <img src="assets/images/score.webp" class="gameover-icon" alt="Score">
                         <span data-translate-key="yourScoreLabel">Skorunuz</span>: <span id="finalScore">0</span>
                     </div>
                     <div class="gameover-row">
-                        <img src="assets/images/fishing_head.png" class="gameover-icon" alt="Level">
+                        <img src="assets/images/fishing_head.webp" class="gameover-icon" alt="Level">
                         <span data-translate-key="yourLevelLabel">Seviyeniz</span>: <span id="finalLevel">1</span>
                     </div>
                     <div class="gameover-row">
-                        <img src="assets/images/fishing_dead.png" class="gameover-icon" alt="Eaten Fish">
+                        <img src="assets/images/fishing_dead.webp" class="gameover-icon" alt="Eaten Fish">
                         <span data-translate-key="eatenFishLabel">Yenen Balık</span>: <span id="finalEatenFish">0</span>
                     </div>
                     <div class="gameover-row">
-                        <img src="assets/images/UI/Time_Icon.png" class="gameover-icon" alt="Time">
+                        <img src="assets/images/UI/Time_Icon.webp" class="gameover-icon" alt="Time">
                         <span data-translate-key="gameTimeLabel">Oyun Süresi</span>: <span id="finalTime">00:00</span>
                     </div>
                     <div class="gameover-row" id="newHighScoreRow" style="display:none;">
@@ -202,10 +209,10 @@
                 </div>
                 <div class="gameover-buttons">
                     <button class="gameover-button" id="restartButton">
-                        <img src="assets/images/UI/Restart.png" alt="Restart">
+                        <img src="assets/images/UI/Restart.webp" alt="Restart">
                     </button>
                     <button class="gameover-button" id="homeButton">
-                        <img src="assets/images/UI/Home.png" alt="Home">
+                        <img src="assets/images/UI/Home.webp" alt="Home">
                     </button>
                 </div>
             </div>
@@ -214,4 +221,5 @@
 
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
