@@ -932,6 +932,56 @@ export default class Game {
         }
     }
 
+    // Oyunu başlangıç durumuna sıfırla (menüye dönüş için)
+    reset() {
+        this.gameState = 'start';
+        this.score = 0;
+        this.playerLevel = 1;
+        this.currentXP = 0;
+        this.xpToNextLevel = CONFIG.BASE_XP_REQUIRED;
+        this.cameraZoom = 1;
+        this.sessionEatenFish = 0;
+
+        // Zaman yavaşlatma sistemini sıfırla
+        this.timeScale = 1;
+        this.isSlowMotionActive = false;
+        this.slowMotionTimer = 0;
+        this.isTouching = false;
+
+        // Timer ve dalga sistemini sıfırla
+        this.gameTimer = 0;
+        this.currentWave = 1;
+        this.waveTimer = 0;
+
+        // Nesneleri temizle
+        this.enemies = [];
+        this.particles = [];
+        this.bombs = [];
+        this.bombWarnings = [];
+        this.hooks = [];
+        this.hookedFish = [];
+        this.magnets = [];
+        this.garbageClouds = [];
+        this.shields = [];
+
+        // Efektleri sıfırla
+        this.magnetEffect.active = false;
+        this.shieldEffect.active = false;
+        this.playerSlowEffect.active = false;
+
+        // Player'ı yeniden oluştur
+        this.player = this.createPlayer();
+        this.player.isHooked = false;
+        this.player.rotation = 0;
+
+        // UI Seviye göstericisini güncelle
+        const floatingLevel = document.getElementById('floatingLevel');
+        if (floatingLevel) {
+            floatingLevel.textContent = this.playerLevel;
+            floatingLevel.style.transform = 'scale(1)';
+        }
+    }
+
     // Oyun bitişi
     gameOver() {
         this.gameState = 'gameOver';

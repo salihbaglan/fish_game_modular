@@ -67,6 +67,7 @@ class GameApp {
     setupEventListeners() {
         document.getElementById('startButton').addEventListener('click', () => this.startGame());
         document.getElementById('restartButton').addEventListener('click', () => this.restartGame());
+        document.getElementById('homeButton').addEventListener('click', () => this.returnToMenu());
 
         // İnaktivite kontrolü için event listener'lar
         ['touchstart', 'touchmove', 'mousedown', 'mousemove'].forEach(eventType => {
@@ -203,6 +204,29 @@ class GameApp {
         console.log('Main menu / Restart');
         this.ui.showGameOverScreen(false);
         this.startGame();
+    }
+
+    // Menüye dönme
+    returnToMenu() {
+        console.log('Return to Menu');
+        gameState = 'menu';
+
+        // Hide game over screen and game UI
+        this.ui.showGameOverScreen(false);
+        const uiPanel = document.querySelector('.ui');
+        if (uiPanel) uiPanel.style.display = 'none';
+
+        // Clear canvas
+        this.renderer.clearScreen();
+
+        // Show start screen
+        this.ui.showStartScreen(true);
+
+        // Reset the game object to its initial state if needed
+        this.game.reset();
+
+        // Update UI to reflect current states (especially currency)
+        this.updateUI();
     }
 
     // Oyun bitişi
