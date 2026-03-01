@@ -21,7 +21,7 @@
 /* Responsive Media Queries */
 @media (max-width: 900px) {
     .ui {
-        font-size: clamp(11px, 2.5vw, 15px);
+        font-size: clamp(12px, 2.5vw, 15px);
         padding: 0 4px;
     }
 }
@@ -30,36 +30,47 @@
     .ui {
         flex-direction: column;
         align-items: stretch;
-        font-size: clamp(10px, 3vw, 13px);
-        padding: 0 2px;
-        gap: 2px;
+        font-size: clamp(12px, 3vw, 14px);
+        padding: 0 4px;
+        gap: 3px;
     }
     
     .ui-left.ui-top-left,
     .ui-right.ui-top-right {
-        padding: 4px 0 0 4px;
-        gap: 2px;
+        padding: 6px 0 0 6px;
+        gap: 4px;
     }
     
     .ui-right.ui-top-right {
-        padding: 4px 4px 0 0;
+        padding: 6px 6px 0 0;
+    }
+
+    .ui-item {
+        padding: 4px 8px;
+        gap: 4px;
+        font-size: 12px;
+    }
+
+    .ui-icon {
+        width: 18px;
+        height: 18px;
     }
 }
 
 @media (max-width: 400px) {
     .ui {
-        font-size: 9px;
-        padding: 0 1px;
+        font-size: 12px;
+        padding: 0 2px;
     }
     
     .ui-item {
-        font-size: 8px;
-        padding: 0 2px;
-        gap: 1px;
+        font-size: 11px;
+        padding: 3px 6px;
+        gap: 3px;
     }
     
     .ui-icon {
-        width: 10px;
-        height: 10px;
+        width: 16px;
+        height: 16px;
     }
 }

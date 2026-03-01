@@ -18,7 +18,11 @@ export default class SoundManager {
         // Arka plan müziği (ayrı yönetim)
         this.music = new Audio('assets/Sounds/Main_Soundtrack.wav');
         this.music.loop = true;
-        this.music.volume = 0.4;
+        this.musicBaseVolume = 0.4;
+        this.music.volume = this.musicBaseVolume;
+
+        // Fade interval takibi
+        this.fadeInterval = null;
 
         // SFX ses seviyesi
         Object.values(this.sounds).forEach(sound => {
@@ -52,6 +56,14 @@ export default class SoundManager {
     playMusic() {
         if (!this.musicEnabled) return;
 
+        // Aktif fade varsa iptal et
+        if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+            this.fadeInterval = null;
+        }
+
+        // Ses seviyesini geri yükle ve başlat
+        this.music.volume = this.musicBaseVolume;
         this.music.currentTime = 0;
         this.music.play().catch(() => {
             // Autoplay policy - kullanıcı etkileşimi sonrası tekrar denenecek
@@ -62,29 +74,40 @@ export default class SoundManager {
      * Arka plan müziğini durdur
      */
     stopMusic() {
+        if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+            this.fadeInterval = null;
+        }
         this.music.pause();
         this.music.currentTime = 0;
+        this.music.volume = this.musicBaseVolume;
     }
 
     /**
      * Müziği fade-out ile durdur
      */
     fadeOutMusic(duration = 1000) {
-        const startVolume = this.music.volume;
+        // Önceki fade'i iptal et
+        if (this.fadeInterval) {
+            clearInterval(this.fadeInterval);
+        }
+
+        const startVolume = this.musicBaseVolume;
         const steps = 20;
         const stepTime = duration / steps;
         const volumeStep = startVolume / steps;
         let currentStep = 0;
 
-        const fadeInterval = setInterval(() => {
+        this.fadeInterval = setInterval(() => {
             currentStep++;
             this.music.volume = Math.max(0, startVolume - (volumeStep * currentStep));
 
             if (currentStep >= steps) {
-                clearInterval(fadeInterval);
+                clearInterval(this.fadeInterval);
+                this.fadeInterval = null;
                 this.music.pause();
                 this.music.currentTime = 0;
-                this.music.volume = startVolume; // Ses seviyesini geri yükle
+                this.music.volume = this.musicBaseVolume;
             }
         }, stepTime);
     }
