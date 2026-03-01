@@ -5,10 +5,11 @@ import { getFishColor, calculateXPRequired, checkCollision } from '../utils/util
 import FishAssets from '../utils/assets.js';
 
 export default class Game {
-    constructor(canvas, effects, ui) { // ui parametresini ekledik
+    constructor(canvas, effects, ui, soundManager) {
         this.canvas = canvas;
         this.effects = effects;
-        this.ui = ui; // ui referansını saklıyoruz
+        this.ui = ui;
+        this.soundManager = soundManager;
         this.fishAssets = new FishAssets();
 
         // Zaman yavaşlatma sistemi
@@ -117,10 +118,17 @@ export default class Game {
             baseSize: CONFIG.PLAYER_INITIAL.SIZE,
             speed: CONFIG.PLAYER_INITIAL.SPEED,
             color: CONFIG.PLAYER_INITIAL.COLOR,
-            level: CONFIG.PLAYER_INITIAL.LEVEL, // Atlas için seviye
-            direction: 1, // Başlangıç yönü
+            level: CONFIG.PLAYER_INITIAL.LEVEL,
+            direction: 1,
             rotation: 0,
-            isAnimating: true // Animasyon durumu
+            targetRotation: 0,
+            isAnimating: true,
+            // Velocity-based smooth movement
+            vx: 0,
+            vy: 0,
+            // Idle swim animation
+            swimPhase: 0,
+            idleTimer: 0
         };
 
         return player;
@@ -675,21 +683,76 @@ export default class Game {
         // deltaTime'ı timeScale ile ölçekle
         const scaledDeltaTime = deltaTime * this.timeScale;
 
-        // Oyuncu hareketi - son mouse pozisyonunu kullan
-        if (!this.player.isHooked && this.isTouching) {
-            const TOUCH_OFFSET_Y = -80; // Parmağın altına girmemesi için offset
-            const dx = this.lastMousePosition.x - this.player.x;
-            const dy = (this.lastMousePosition.y + TOUCH_OFFSET_Y) - this.player.y;
-            const baseSpeed = 0.1;
-            const currentSpeed = this.playerSlowEffect.active ? baseSpeed * 0.3 : baseSpeed;
+        // Oyuncu hareketi - yumuşak fizik tabanlı takip
+        if (!this.player.isHooked) {
+            const TOUCH_OFFSET_Y = -80;
+            const friction = 0.88; // Sürtünme (hız azaltma)
+            const acceleration = 0.25; // İvme katsayısı
+            const maxSpeed = 12; // Maksimum hız
 
-            // Hareket yönüne göre direction değerini ayarla
-            if (Math.abs(dx) > 0.1) { // Küçük hareketleri görmezden gel
-                this.player.direction = dx > 0 ? 1 : -1; // Sağa gidiyorsa sağa bak, sola gidiyorsa sola bak
+            if (this.isTouching) {
+                // Hedefe doğru mesafe
+                const targetX = this.lastMousePosition.x;
+                const targetY = this.lastMousePosition.y + TOUCH_OFFSET_Y;
+                const dx = targetX - this.player.x;
+                const dy = targetY - this.player.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Mesafeye göre ivme uygula (yakınken yavaşla)
+                const speedFactor = this.playerSlowEffect.active ? 0.3 : 1;
+                const accelStrength = Math.min(distance / 80, 1) * acceleration * speedFactor;
+
+                if (distance > 1) {
+                    this.player.vx += (dx / distance) * accelStrength * distance * 0.05;
+                    this.player.vy += (dy / distance) * accelStrength * distance * 0.05;
+                }
+
+                // Hız sınırlama
+                const speed = Math.sqrt(this.player.vx * this.player.vx + this.player.vy * this.player.vy);
+                if (speed > maxSpeed) {
+                    this.player.vx = (this.player.vx / speed) * maxSpeed;
+                    this.player.vy = (this.player.vy / speed) * maxSpeed;
+                }
+
+                // Hareket yönüne göre direction (yumuşak geçiş)
+                if (Math.abs(this.player.vx) > 0.5) {
+                    this.player.direction = this.player.vx > 0 ? 1 : -1;
+                }
+
+                // Gövde eğimi - hareket yönüne doğru hafif rotasyon
+                this.player.targetRotation = Math.atan2(this.player.vy, Math.abs(this.player.vx)) * 0.3 * this.player.direction;
+
+                // İdle timer sıfırla
+                this.player.idleTimer = 0;
+            } else {
+                // Dokunma yok - idle durumu
+                this.player.idleTimer += this.timeScale;
+                this.player.targetRotation = 0; // Düz pozisyona dön
             }
 
-            this.player.x += dx * currentSpeed;
-            this.player.y += dy * currentSpeed;
+            // Sürtünme uygula
+            this.player.vx *= friction;
+            this.player.vy *= friction;
+
+            // Çok küçük hızları sıfırla
+            if (Math.abs(this.player.vx) < 0.01) this.player.vx = 0;
+            if (Math.abs(this.player.vy) < 0.01) this.player.vy = 0;
+
+            // Pozisyonu güncelle
+            this.player.x += this.player.vx * this.timeScale;
+            this.player.y += this.player.vy * this.timeScale;
+
+            // Yumuşak rotasyon geçişi
+            this.player.rotation += (this.player.targetRotation - this.player.rotation) * 0.08;
+
+            // İdle yüzme dalgalanması (yerinde hafif salınım)
+            this.player.swimPhase += 0.03 * this.timeScale;
+            if (this.player.idleTimer > 30) {
+                const idleIntensity = Math.min((this.player.idleTimer - 30) / 60, 1);
+                this.player.x += Math.sin(this.player.swimPhase * 1.5) * 0.3 * idleIntensity;
+                this.player.y += Math.cos(this.player.swimPhase) * 0.2 * idleIntensity;
+                this.player.rotation += Math.sin(this.player.swimPhase * 0.8) * 0.02 * idleIntensity;
+            }
 
             // Oyuncuyu ekran sınırları içinde tut
             this.player.x = Math.max(this.player.size / 2, Math.min(this.canvas.width - this.player.size / 2, this.player.x));
@@ -1276,6 +1339,7 @@ export default class Game {
                 this.magnetEffect.active = true;
                 this.magnetEffect.duration = this.magnetEffect.maxDuration;
 
+                if (this.soundManager) this.soundManager.playSFX('collectItem');
                 const collectParticles = this.effects.createParticles(
                     magnet.x,
                     magnet.y,
@@ -1303,6 +1367,7 @@ export default class Game {
                 this.shieldEffect.active = true;
                 this.shieldEffect.duration = this.shieldEffect.maxDuration;
 
+                if (this.soundManager) this.soundManager.playSFX('collectItem');
                 const collectParticles = this.effects.createParticles(
                     shield.x,
                     shield.y,
@@ -1346,6 +1411,7 @@ export default class Game {
                     this.ui.addFishCurrency(1);
                     this.sessionEatenFish += 1;
 
+                    if (this.soundManager) this.soundManager.playSFX('collectCoin');
                     const newParticles = this.effects.createParticles(
                         enemy.x,
                         enemy.y,

@@ -1,7 +1,8 @@
 // ui.js - Kullanıcı arayüzü yönetimi
 import { getString, updateDynamicTexts } from '../utils/localization.js'; // getString ve updateDynamicTexts'i dahil et
 export default class UI {
-    constructor() {
+    constructor(soundManager) {
+        this.soundManager = soundManager;
         // Oyun İçi UI elementleri
         this.scoreElement = document.getElementById('score');
         this.highScoreElement = document.getElementById('highScore');
@@ -31,8 +32,9 @@ export default class UI {
         this.closePanelButtons = document.querySelectorAll('.close-panel-btn');
         this.upgradeButtons = document.querySelectorAll('.btn-upgrade');
         this.soundToggle = document.getElementById('soundToggle');
+        this.musicToggle = document.getElementById('musicToggle');
         this.vfxToggle = document.getElementById('vfxToggle');
-        
+
         // Başlangıçta toplam balık sayısını yükle (localStorage'dan veya varsayılan)
         this.totalFishCurrency = parseInt(localStorage.getItem('totalFishCurrency')) || 0;
         this.updateTotalFishCurrencyDisplay();
@@ -48,6 +50,7 @@ export default class UI {
         this.navButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const panelId = button.dataset.panel;
+                if (this.soundManager) this.soundManager.playSFX('button2');
                 this.openPanel(panelId);
             });
         });
@@ -55,6 +58,7 @@ export default class UI {
         this.closePanelButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const panelId = button.dataset.panel;
+                if (this.soundManager) this.soundManager.playSFX('button2');
                 this.closePanel(panelId);
             });
         });
@@ -72,7 +76,7 @@ export default class UI {
                     alert(getString('upgradeSuccessful', { item: getString(upgradeType === 'magnet' ? 'upgradeMagnetLabel' : 'upgradeShieldLabel') }));
                     // İlgili level span'ını güncelle (örnek)
                     const levelSpan = document.getElementById(`${upgradeType}Level`);
-                    if(levelSpan) {
+                    if (levelSpan) {
                         let currentLevelText = levelSpan.textContent.match(/\d+/); // Sadece sayıyı al
                         let currentLevel = currentLevelText ? parseInt(currentLevelText[0]) : 1;
                         levelSpan.innerHTML = `<span data-translate-key="levelAbbreviation">${getString('levelAbbreviation')}</span> ${currentLevel + 1}`;
@@ -84,17 +88,29 @@ export default class UI {
             });
         });
 
-        if(this.soundToggle) {
+        if (this.soundToggle) {
+            // Kaydedilmiş tercihe göre başlangıç durumunu ayarla
+            if (this.soundManager) {
+                this.soundToggle.checked = this.soundManager.isSFXEnabled();
+            }
             this.soundToggle.addEventListener('change', (event) => {
-                // Ses efektlerini aç/kapat
-                // Burada ses efektlerini yönetecek bir fonksiyon çağrılabilir
+                if (this.soundManager) this.soundManager.setSFXEnabled(event.target.checked);
             });
         }
 
-        if(this.vfxToggle) {
+        if (this.musicToggle) {
+            // Kaydedilmiş tercihe göre başlangıç durumunu ayarla
+            if (this.soundManager) {
+                this.musicToggle.checked = this.soundManager.isMusicEnabled();
+            }
+            this.musicToggle.addEventListener('change', (event) => {
+                if (this.soundManager) this.soundManager.setMusicEnabled(event.target.checked);
+            });
+        }
+
+        if (this.vfxToggle) {
             this.vfxToggle.addEventListener('change', (event) => {
                 // Görsel efektleri aç/kapat
-                // Burada görsel efektleri yönetecek bir fonksiyon çağrılabilir
             });
         }
     }
@@ -104,7 +120,7 @@ export default class UI {
             this.totalFishCountElement.textContent = this.totalFishCurrency;
         }
     }
-    
+
     // Oyuncuya balık para birimi ekle
     addFishCurrency(amount) {
         this.totalFishCurrency += amount;
@@ -118,7 +134,7 @@ export default class UI {
 
         const panelToShow = document.getElementById(panelId);
         const activeButton = document.querySelector(`.nav-btn[data-panel="${panelId}"]`);
-        
+
         if (panelToShow) panelToShow.classList.add('active');
         if (activeButton) activeButton.classList.add('active');
     }
@@ -139,7 +155,7 @@ export default class UI {
         if (this.eatenFishCountElement) { // Elementin varlığını kontrol et
             this.eatenFishCountElement.textContent = sessionEatenFish;
         }
-        
+
         // Timer güncelleme
         if (this.gameTimerElement && gameTimer !== undefined) {
             const totalSeconds = Math.floor(gameTimer / 60); // 60 FPS
@@ -148,11 +164,11 @@ export default class UI {
             const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             this.gameTimerElement.textContent = formattedTime;
         }
-        
+
         const xpProgress = (currentXP / xpToNextLevel) * 100;
         this.xpProgressElement.style.width = xpProgress + '%';
         this.xpTextElement.textContent = `${currentXP} / ${xpToNextLevel}`;
-        
+
         // Mıknatıs efekti güncelleme
         if (magnetEffect && magnetEffect.active) {
             this.magnetBarElement.style.display = 'flex';
@@ -201,11 +217,11 @@ export default class UI {
         if (show) {
             if (this.finalScoreElement) this.finalScoreElement.textContent = score;
             if (this.finalLevelElement) this.finalLevelElement.textContent = level;
-            
+
             // Yenen balık ve süreyi güncelle
             const eatenFishElem = document.getElementById('finalEatenFish');
             if (eatenFishElem) eatenFishElem.textContent = sessionEatenFish;
-            
+
             const timeElem = document.getElementById('finalTime');
             if (timeElem) {
                 const totalSeconds = Math.floor(gameTimer / 60);
@@ -213,11 +229,11 @@ export default class UI {
                 const seconds = totalSeconds % 60;
                 timeElem.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
-            
+
             // Yeni rekor bildirimi
             const newHighScoreRow = document.getElementById('newHighScoreRow');
             if (newHighScoreRow) newHighScoreRow.style.display = isNewHighScore ? 'block' : 'none';
-            
+
             // Mesajı başarıya göre ayarla
             if (this.gameOverMessageElement) {
                 let message = '';
@@ -233,36 +249,36 @@ export default class UI {
         } else if (!show && this.overlay) {
             this.overlay.style.display = ''; // Oyun yeniden başladığında karartmayı tekrar aktif et
         }
-        
+
         if (this.gameOverScreenElement) {
             this.gameOverScreenElement.style.display = show ? 'flex' : 'none';
         }
-        
+
         // Oyun bittiğinde üstteki paneli gizle
         const uiPanel = document.querySelector('.ui');
         if (uiPanel) uiPanel.style.display = show ? 'none' : 'block';
-        
+
         // Magnet ve shield barlarını da gizle
         if (show) {
             if (this.magnetBarElement) this.magnetBarElement.style.display = 'none';
             if (this.shieldBarElement) this.shieldBarElement.style.display = 'none';
         }
     }
-    
+
     // Kalkan bar'ını güncelle (Bu fonksiyon updateUI içine taşındı, gerekirse ayrılabilir)
     // updateShieldBar(shieldEffect) { ... }
 
     // Mesaj gösterme
     showMessage(message, type = 'info', duration = 0, timeScale = 1) {
         if (!this.overlay || !this.overlayMessage) return;
-        
+
         // Geçiş süresini timeScale ile ayarla
         const transitionDuration = 1 / timeScale;
         this.overlay.style.setProperty('--transition-duration', `${transitionDuration}s`);
-        
+
         this.overlayMessage.textContent = message;
         this.overlay.classList.add('inactive');
-        
+
         if (duration > 0) {
             setTimeout(() => this.hideMessage(), duration);
         }
@@ -271,11 +287,11 @@ export default class UI {
     // Mesaj gizleme
     hideMessage(timeScale = 1) {
         if (!this.overlay) return;
-        
+
         // Geçiş süresini timeScale ile ayarla
         const transitionDuration = 1 / timeScale;
         this.overlay.style.setProperty('--transition-duration', `${transitionDuration}s`);
-        
+
         this.overlay.classList.remove('inactive');
     }
 }

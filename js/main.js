@@ -5,6 +5,7 @@ import Effects from './game/effects.js';
 import InputHandler from './game/input.js';
 import Game from './game/game.js';
 import UI from './ui/ui.js';
+import SoundManager from './utils/sound-manager.js';
 import { saveGameData, loadHighScore } from './utils/utils.js';
 import { initLocalization } from './utils/localization.js'; // Lokalizasyon modülünü dahil et
 
@@ -26,10 +27,11 @@ class GameApp {
         this.renderer = new Renderer(this.canvas);
         this.effects = new Effects(this.gameContainer);
         this.inputHandler = new InputHandler(this.canvas);
-        this.ui = new UI();
+        this.soundManager = new SoundManager();
+        this.ui = new UI(this.soundManager);
 
         // Oyun nesnesi
-        this.game = new Game(this.canvas, this.effects, this.ui); // UI örneğini Game'e iletiyoruz
+        this.game = new Game(this.canvas, this.effects, this.ui, this.soundManager);
 
         // Global referans (renderer için)
         window.game = this.game;
@@ -191,6 +193,9 @@ class GameApp {
         this.isGamePaused = false;
         gameSpeed = 1;
 
+        this.soundManager.playSFX('button1');
+        this.soundManager.playMusic();
+
         this.ui.showStartScreen(false);
         // Oyun başladığında üstteki paneli göster
         const uiPanel = document.querySelector('.ui');
@@ -202,6 +207,7 @@ class GameApp {
     // Oyunu yeniden başlatma
     restartGame() {
         console.log('Main menu / Restart');
+        this.soundManager.playSFX('button3');
         this.ui.showGameOverScreen(false);
         this.startGame();
     }
@@ -210,6 +216,9 @@ class GameApp {
     returnToMenu() {
         console.log('Return to Menu');
         gameState = 'menu';
+
+        this.soundManager.playSFX('button3');
+        this.soundManager.fadeOutMusic(800);
 
         // Hide game over screen and game UI
         this.ui.showGameOverScreen(false);
@@ -235,6 +244,8 @@ class GameApp {
         const result = this.game.gameOver();
         saveGameData(result.highScore);
         const isNewHighScore = result.score >= result.highScore;
+
+        this.soundManager.fadeOutMusic(1500);
 
         // Barları kesin kapatmak için efektleri pasif yapıp UI'yı güncelle
         this.game.magnetEffect.active = false;
